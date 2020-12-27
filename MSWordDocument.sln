@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30709.132
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Genexus.Word", "MSWordDocument\Genexus.Word.csproj", "{444CA50A-46E7-4786-A1B6-C388E5FF5E5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSWordUnitTesting", "MSWordUnitTesting\MSWordUnitTesting.csproj", "{A2DD7511-A8B7-4CC7-B36B-58EBE474BF65}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{444CA50A-46E7-4786-A1B6-C388E5FF5E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{444CA50A-46E7-4786-A1B6-C388E5FF5E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{444CA50A-46E7-4786-A1B6-C388E5FF5E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{444CA50A-46E7-4786-A1B6-C388E5FF5E5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2DD7511-A8B7-4CC7-B36B-58EBE474BF65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2DD7511-A8B7-4CC7-B36B-58EBE474BF65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2DD7511-A8B7-4CC7-B36B-58EBE474BF65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2DD7511-A8B7-4CC7-B36B-58EBE474BF65}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3C6A8B18-C30C-4731-9E5B-81F45B0E6F80}
+	EndGlobalSection
+EndGlobal

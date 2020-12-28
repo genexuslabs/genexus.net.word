@@ -397,7 +397,7 @@ namespace Genexus.Word
 		/// <param name="text"></param>
 		/// <param name="style"></param>
 		/// <returns></returns>
-		public int AddText(string text, BasicStyle style)
+		public int AddTextWithBasicStyle(string text, BasicStyle style)
 		{
 			return AddText(text, style.GetProperties());
 		}
@@ -534,7 +534,7 @@ namespace Genexus.Word
 		/// <param name="matchCase"></param>
 		/// <param name="style"></param>
 		/// <returns></returns>
-		public int ReplaceTextWithStyle(string searchText, string replaceText, bool matchCase, BasicStyle style)
+		public int ReplaceTextWithBasicStyle(string searchText, string replaceText, bool matchCase, BasicStyle style)
 		{
 			return ReplaceTextWithStyle(searchText, replaceText, matchCase, style.GetProperties());
 		}

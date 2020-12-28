@@ -8,24 +8,24 @@ namespace MSWordDocument
 {
 	public class BasicStyle
 	{
-		public bool? Bold { get; set; }
-		public bool? Italic { get; set; }
+		public bool Bold { get; set; } = false;
+		public bool Italic { get; set; } = false;
 		public string FontFamily { get; set; }
-		public int? FontSize { get; set; }
+		public int FontSize { get; set; } = 0;
 
 		public string Color { get; set; }
 
 		public List<string> GetProperties()
 		{
 			List<string> props = new List<string>();
-			if (Bold.HasValue && Bold.Value)
+			if (Bold)
 				props.Add("bold");
-			if (Italic.HasValue && Italic.Value)
+			if (Italic)
 				props.Add("italic");
 			if (!string.IsNullOrEmpty(FontFamily))
 				props.Add($"FontFamily:{FontFamily}");
-			if (FontSize.HasValue)
-				props.Add($"FontSize:{FontSize.Value}");
+			if (FontSize > 0)
+				props.Add($"FontSize:{FontSize}");
 			if (!string.IsNullOrEmpty(Color))
 				props.Add($"Color:{Color}");
 			return props;

@@ -14,7 +14,9 @@ This implementation is based on OpenXML.
 
 ## WordServerDocument class
 
-### Create or Open
+### Create , Open , Close, Save
+
+With the following functions you can create or open a word document. Remember to Close the document after your operations over the document are finished.
 
 ```cs
 /// <summary>
@@ -40,11 +42,49 @@ public int Open(string fileName, out string message)
 /// <param name="message">additional information related with the output code</param>
 /// <returns></returns>
 public int Create(string fileName, bool overwriteIfExists, out string message)
+
+
+
+/// <summary>
+/// Save the current document state
+/// </summary>
+public void Save()
+
+/// <summary>
+/// Save the current document in other file, consider that previously to save to other document the current document is saved.
+/// </summary>
+/// <param name="fileName"></param>
+public void SaveAs(string fileName)
+
+/// <summary>
+/// Close the file
+/// </summary>
+public void Close()
 ```
 
 
 ### Edition Methods
 
+Several edition methods receive a List of style properties as parameter. 
+The options to send in the list are:
+
+- bold
+- italic
+- caps
+- smallcaps
+- strike
+- doublestrike
+- outline
+- shadow
+- underline
+- fontsize:<number>               ie: fontsize:14
+- color:<color name>              ie: color:red
+- fontfamily:<font name>          ie: fontfamily:Arial
+- numbering
+- bullet
+- level:<number>                  ie:  level:2  ( level number start with 0 and is the default level number for numbering and bullets)
+  
+           
 ```cs
 /// <summary>
 /// Add an image to the document with the original image width and height
@@ -149,6 +189,149 @@ public int ReplaceTextWithStyle(string searchText, string replaceText, bool matc
 /// <param name="height"></param>
 /// <returns></returns>
 public int ReplaceTextWithImage(string searchText, bool matchCase, string imageFile, double width, double height)
+```
+
+
+### Samples
+
+```cs
+      [TestMethod]
+        public void ReplaceAndAddWithStyle()
+        {
+            using (WordServerDocument doc = new WordServerDocument())
+            {
+                File.Copy($"{s_BasePath}\\TemplateSample.docx", $"{s_BasePath}\\Sample.docx", true);
+              
+                Assert.AreEqual(doc.Open($"{s_BasePath}\\Sample.docx", out _), OutputCode.OK);
+            
+
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP01", "新潟県新潟市", true, new List<string>() { "color:blue", "italic" , "fontsize:24", "fontfamily:MS PMincho" }), 1);
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() {  "italic" , "bold" , "color:green", "fontfamily:MS PGothic"}), 1);
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP03", "Remplazo con bold blue italic", true, new List<string>() { "italic", "bold" , "color:blue"}), 1);
+
+
+                doc.AddText("製品企画室", new List<string>() { "fontsize:110" });
+                doc.AddText("TEL:", new List<string>() { "italic" });
+                doc.AddText("FAX:", new List<string>() { "fontsize:54", "color:pink" });
+
+                doc.Save();
+            }
+            
+        }
+
+        [TestMethod]
+        public void ReplaceAndAddWithImage()
+        {
+            using (WordServerDocument doc = new WordServerDocument())
+            {
+                File.Copy($"{s_BasePath}\\TemplateSample.docx", $"{s_BasePath}\\SampleImage.docx", true);
+
+                Assert.AreEqual(doc.Open($"{s_BasePath}\\SampleImage.docx", out _), OutputCode.OK);
+
+
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP01", "新潟県新潟市", true, new List<string>() { "color:blue", "italic", "fontsize:24", "fontfamily:MS PMincho" }), 1);
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() { "italic", "bold", "color:green", "fontfamily:MS PGothic" }), 1);
+                Assert.AreEqual(doc.ReplaceTextWithImage("REP03", false, "d:\\temp\\dos.png", 50, 50), 1);
+
+
+                doc.AddText("製品企画室", new List<string>() { "fontsize:110" });
+                doc.AddText("TEL:", new List<string>() { "italic" });
+                doc.AddText("FAX:", new List<string>() { "fontsize:54", "color:pink" });
+
+                doc.Save();
+            }
+
+        }
+
+
+        [TestMethod]
+        public void CreationTest()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            Assert.AreEqual(doc.Create($"{s_BasePath}\\test.docx", true, out _), OutputCode.OK);
+            doc.Save();
+            doc.Close();
+        }
+
+        [TestMethod]
+        public void CreationTestWithoutOverwrite()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            Assert.AreEqual(doc.Create($"{s_BasePath}\\test.docx", false, out _), OutputCode.FILE_ALREADY_EXISTS);
+            doc.Close();
+        }
+
+        [TestMethod]
+        public void CreationParagraphsWithProperties()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            Assert.AreEqual(doc.Create($"{s_BasePath}\\testFormats.docx", true, out _), OutputCode.OK);
+
+
+            doc.AddText("Bold", new List<string>() { "bold" });
+            doc.AddText("Italic", new List<string>() { "italic" });
+            doc.AddText("FontSize 54", new List<string>() { "fontsize:54" });
+            doc.AddText("color red italic", new List<string>() { "color:red", "italic" });
+            doc.AddText("This text without format", new List<string>() );
+
+
+            doc.AddText("Bold", new List<string>() { "bold", "numbering" });
+            doc.AddText("Italic", new List<string>() { "italic", "numbering" });
+            doc.AddText("FontSize 54", new List<string>() { "fontsize:54", "numbering" });
+            doc.AddText("color red italic", new List<string>() { "color:red", "italic", "numbering" });
+            doc.AddText("This text without format", new List<string>());
+
+            doc.AddText("Bold", new List<string>() { "bold", "numbering", "level:0" });
+            doc.AddText("Italic", new List<string>() { "italic", "numbering", "level:1" });
+            doc.AddText("FontSize 54", new List<string>() { "fontsize:54", "numbering", "level:1" });
+            doc.AddText("color red italic", new List<string>() { "color:red", "italic", "numbering", "level:0" });
+            doc.AddText("This text without format before page", new List<string>());
+
+            doc.AddPageBreak();
+
+            doc.AddText("Bold", new List<string>() { "bold", "bullet" });
+            doc.AddText("Italic", new List<string>() { "italic", "bullet" });
+            doc.AddText("FontSize 54", new List<string>() { "fontsize:54", "bullet" });
+            doc.AddText("color red italic", new List<string>() { "color:red", "italic", "bullet" });
+            doc.AddText("This text without format after page", new List<string>());
+
+            doc.AddText("Bold", new List<string>() { "bold", "bullet", "level:0" });
+            doc.AddText("Italic", new List<string>() { "italic", "bullet", "level:1" });
+            doc.AddText("FontSize 54", new List<string>() { "fontsize:54", "bullet",  "level:1" });
+            doc.AddText("color red italic", new List<string>() { "color:red", "italic", "bullet",  "level:2" });
+            doc.AddText("This text without format", new List<string>());
+            doc.AddRuledLine(60);
+
+
+            doc.AddText("Bold", new List<string>() { "bold", "numbering" });
+            doc.AddText("Italic", new List<string>() { "italic", "numbering" });
+            doc.AddText("FontSize 54", new List<string>() { "fontsize:54", "numbering" });
+            doc.AddText("color red italic", new List<string>() { "color:red", "italic", "numbering" });
+            doc.AddText("This text without format", new List<string>());
+            doc.AddText("          d                                                ", new List<string>() { "underline"});
+            doc.AddRuledLine(40);
+
+
+            doc.Save();
+            doc.Close();
+        }
+
+        [TestMethod]
+        public void CreationWithImage()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            Assert.AreEqual(doc.Create($"{s_BasePath}\\testImage.docx", true, out _), OutputCode.OK);
+
+            doc.AddText("Bold", new List<string>() { "bold" });
+
+              doc.AddImage($"{s_BasePath}\\uno.gif", 100, 100);
+                doc.AddImage($"{s_BasePath}\\dos.png", 50, 50);
+            doc.AddImage($"{s_BasePath}\\tres.jpeg", 20, 20);
+
+            doc.Save();
+            doc.Close();
+        }
+    }
 ```
 
 

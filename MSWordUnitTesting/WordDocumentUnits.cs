@@ -36,7 +36,7 @@ namespace MSWordUnitTesting
               
                 Assert.AreEqual(doc.Open($"{s_BasePath}\\Sample.docx", out _), OutputCode.OK);
   
-                Assert.AreEqual(doc.ReplaceTextWithStyle("REP01", "新潟県新潟市", true, new List<string>() { "color:blue", "italic" , "fontsize:24", "fontfamily:MS PMincho" }), 1);
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP01", "新潟県新潟市", true, new List<string>() { "color:blue", "italic" , "fontsize:24", "fontfamily:MS PMincho" }), 2);
                 Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() {  "italic" , "bold" , "color:green", "fontfamily:MS PGothic"}), 1);
                 Assert.AreEqual(doc.ReplaceTextWithStyle("REP03", "Remplazo con bold blue italic", true, new List<string>() { "italic", "bold" , "color:blue"}), 1);
 
@@ -60,7 +60,7 @@ namespace MSWordUnitTesting
                 Assert.AreEqual(doc.Open($"{s_BasePath}\\SampleImage.docx", out _), OutputCode.OK);
 
 
-                Assert.AreEqual(doc.ReplaceTextWithStyle("REP01", "新潟県新潟市", true, new List<string>() { "color:blue", "italic", "fontsize:24", "fontfamily:MS PMincho" }), 1);
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP01", "新潟県新潟市", true, new List<string>() { "color:blue", "italic", "fontsize:24", "fontfamily:MS PMincho" }), 2);
                 Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() { "italic", "bold", "color:green", "fontfamily:MS PGothic" }), 1);
                 Assert.AreEqual(doc.ReplaceTextWithImage("REP03", false, $"{s_BasePath}\\dos.png", 50, 50), 1);
 

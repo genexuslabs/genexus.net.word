@@ -1,8 +1,8 @@
 ﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Office2010.Word.DrawingShape;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using MSWordDocument;
-using OpenXmlPowerTools;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -63,14 +63,10 @@ namespace Genexus.Word
 				};
 				m_Document = WordprocessingDocument.Open(fileName, true, settings);
 				m_DocumentPart = m_Document.MainDocumentPart;
-				foreach (var part in m_Document.GetAllParts())
-				{
-					if (part is StyleDefinitionsPart)
-					{
-						m_StylesPart = part as StyleDefinitionsPart;
-						m_Styles = m_StylesPart.Styles;
-					}
-				}
+				m_StylesPart = m_Document.MainDocumentPart.StyleDefinitionsPart;
+				if (m_StylesPart != null)
+					m_Styles = m_StylesPart.Styles;
+
 				if (m_Document.MainDocumentPart != null && m_Document.MainDocumentPart.Document != null && m_Document.MainDocumentPart.Document.Body != null)
 					m_Body = m_Document.MainDocumentPart.Document.Body;
 				else
@@ -83,6 +79,39 @@ namespace Genexus.Word
 				ExceptionManager.HandleException(ex);
 				return OutputCode.FAIL_OPEN;
 			}
+		}
+
+		public void AddSampleCode()
+		{
+			TextBoxInfo2 textBoxInfo21 = new TextBoxInfo2();
+			TextBoxContent textBoxContent1 = new TextBoxContent();
+
+			Paragraph paragraph7 = new Paragraph() { RsidParagraphMarkRevision = "00FC6179", RsidParagraphAddition = "00F60DF2", RsidParagraphProperties = "00DE46A1", RsidRunAdditionDefault = "00F60DF2", ParagraphId = "7C1AB0AA", TextId = "77777777" };
+
+			ParagraphProperties paragraphProperties3 = new ParagraphProperties();
+			Justification justification4 = new Justification() { Val = JustificationValues.Center };
+
+			paragraphProperties3.Append(justification4);
+
+			Run run7 = new Run() { RsidRunProperties = "00FC6179" };
+
+			RunProperties runProperties2 = new RunProperties();
+			RunFonts runFonts11 = new RunFonts() { Hint = FontTypeHintValues.EastAsia };
+
+			runProperties2.Append(runFonts11);
+			Text text2 = new Text();
+			text2.Text = "H";
+
+			run7.Append(runProperties2);
+			run7.Append(text2);
+
+			paragraph7.Append(paragraphProperties3);
+			paragraph7.Append(run7);
+
+			textBoxContent1.Append(paragraph7);
+			textBoxInfo21.Append(textBoxContent1);
+
+
 		}
 
 
@@ -409,7 +438,7 @@ namespace Genexus.Word
 		/// <param name="fileName"></param>
 		private void AddImageToBody(string relationshipId, string fileName)
 		{
-			var img = new BitmapImage(new Uri(fileName, UriKind.RelativeOrAbsolute));	
+			var img = new BitmapImage(new Uri(fileName, UriKind.RelativeOrAbsolute));
 			double width = img.PixelWidth;
 			double height = img.PixelHeight;
 			var horzRezDpi = img.DpiX;
@@ -417,6 +446,7 @@ namespace Genexus.Word
 			var element = GetImageElement(relationshipId, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
 			// Append the reference to body, the element should be in a Run.
 			m_DocumentPart.Document.Body.AppendChild(new Paragraph(new Run(element)));
+			
 		}
 
 		/// <summary>
@@ -522,7 +552,10 @@ namespace Genexus.Word
 		{
 			if (m_Document == null || m_Body == null)
 				return OutputCode.INVALID_OPERATION;
-			TextReplacer.SearchAndReplace(m_Document, searchText, replaceText, matchCase);
+
+			// Avoid to use PowerTools at this time
+			//TextReplacer.SearchAndReplace(m_Document, searchText, replaceText, matchCase);
+			ReplaceTextWithBasicStyle(searchText, replaceText, matchCase, new BasicStyle());
 			return OutputCode.OK;
 		}
 
@@ -555,9 +588,7 @@ namespace Genexus.Word
 		{
 			if (m_Document == null || m_Body == null)
 				return 0;
-			// Prepare the new properties for the text
-			RunProperties newProperties = new RunProperties(GetProperties(properties));
-			newProperties.Append(new Text(replaceText));
+		
 
 			int count = 0;
 			var paras = m_Body.Elements<Paragraph>();
@@ -569,6 +600,10 @@ namespace Genexus.Word
 					{
 						if (string.Compare(text.Text, searchText, !matchCase) == 0)
 						{
+							// Prepare the new properties for the text
+							RunProperties newProperties = new RunProperties(GetProperties(properties));
+							newProperties.Append(new Text(replaceText));
+
 							run.PrependChild<RunProperties>(newProperties);
 							text.Remove();
 							count++;
@@ -579,6 +614,8 @@ namespace Genexus.Word
 			return count;
 		}
 
+
+	
 
 		/// <summary>
 		/// Replace a given text in <paramref name="searchText"/> by an image specified in <paramref name="imageFile"/>
@@ -598,10 +635,16 @@ namespace Genexus.Word
 
 			// Prepare the new properties for the text
 			RunProperties newProperties = new RunProperties();
-			var img = new BitmapImage(new Uri(imageFile, UriKind.RelativeOrAbsolute));
-		
+			var img = new BitmapImage();
+			img.BeginInit();
+			img.UriSource = new Uri(imageFile, UriKind.RelativeOrAbsolute);
+			img.CacheOption = BitmapCacheOption.OnLoad;
+			img.EndInit();
 			var horzRezDpi = img.DpiX;
 			var vertRezDpi = img.DpiY;
+			
+			
+			
 
 			newProperties.Append(GetImageElement(id, imageFile, "test", width, height, horzRezDpi, vertRezDpi));
 

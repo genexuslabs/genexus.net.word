@@ -598,11 +598,21 @@ namespace Genexus.Word
 				{
 					foreach (var text in run.Elements<Text>())
 					{
-						if (string.Compare(text.Text, searchText, !matchCase) == 0)
+						string currentText = matchCase ? text.Text : text.Text.ToLower();
+						searchText = matchCase ? searchText : searchText.ToLower();
+						int startIndex = currentText.IndexOf(searchText);
+						if (startIndex >= 0)
 						{
+							string newText;
+							if (startIndex > 0)
+								newText = currentText.Substring(0, startIndex);
+							else
+								newText = String.Empty;
+							newText += replaceText;
+							newText += currentText.Substring(startIndex + searchText.Length);
 							// Prepare the new properties for the text
 							RunProperties newProperties = new RunProperties(GetProperties(properties));
-							newProperties.Append(new Text(replaceText));
+							newProperties.Append(new Text(newText));
 
 							run.PrependChild<RunProperties>(newProperties);
 							text.Remove();

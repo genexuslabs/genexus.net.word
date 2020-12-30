@@ -27,6 +27,30 @@ namespace MSWordUnitTesting
         }
 
 
+
+        [TestMethod]
+        public void ReplaceFull()
+        {
+            using (WordServerDocument doc = new WordServerDocument())
+            {
+                File.Copy($"{s_BasePath}\\SampleFull.docx", $"{s_BasePath}\\SampleFullInstance.docx", true);
+
+                Assert.AreEqual(doc.Open($"{s_BasePath}\\SampleFullInstance.docx", out _), OutputCode.OK);
+
+                Assert.AreEqual(doc.ReplaceTextWithStyle("Imported:", "新潟県新潟市", true, new List<string>() { "color:blue", "italic", "fontsize:24", "fontfamily:MS PMincho" }), 4);
+       //         Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() { "italic", "bold", "color:green", "fontfamily:MS PGothic" }), 1);
+        //        Assert.AreEqual(doc.ReplaceTextWithStyle("REP03", "Remplazo con bold blue italic", true, new List<string>() { "italic", "bold", "color:blue" }), 1);
+
+
+          //      doc.AddText("製品企画室", new List<string>() { "fontsize:110" });
+            //    doc.AddText("TEL:", new List<string>() { "italic" });
+             //   doc.AddText("FAX:", new List<string>() { "fontsize:54", "color:pink" });
+
+                doc.Save();
+            }
+
+        }
+
         [TestMethod]
         public void ReplaceAndAddWithStyle()
         {

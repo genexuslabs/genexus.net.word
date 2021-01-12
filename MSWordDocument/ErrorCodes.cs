@@ -16,4 +16,9 @@ namespace Genexus.Word
         public readonly static int FILE_NOT_FOUND = 6;
         public readonly static int INVALID_OPERATION = 1;
     }
+
+    public class AddImageOutputCode
+    {
+        public readonly static int IMAGE_NOT_FOUND = 12;
+    }
 }

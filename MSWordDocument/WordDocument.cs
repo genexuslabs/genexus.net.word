@@ -211,7 +211,7 @@ namespace Genexus.Word
 				imageType = ImagePartType.Png;
 			}
 			ImagePart ip = m_DocumentPart.AddImagePart(imageType);
-			using (FileStream fs = new FileStream(filepath, FileMode.Open))
+			using (FileStream fs = new FileStream(filepath, FileMode.Open, FileAccess.Read))
 			{
 				if (fs.Length == 0) return string.Empty;
 				ip.FeedData(fs);
@@ -241,8 +241,7 @@ namespace Genexus.Word
 		/// <param name="filePath"></param>
 		public void AddImage(string filePath)
 		{
-			string id = AddImagePart(filePath);
-			AddImageToBody(id, filePath);
+			AddImageImpl(filePath);
 		}
 
 		/// <summary>
@@ -253,10 +252,23 @@ namespace Genexus.Word
 		/// <param name="height"></param>
 		public void AddImage(string filePath, int width, int height)
 		{
-			string id = AddImagePart(filePath);
-			AddImageToBody(id, filePath, width, height);
+			AddImageImpl(filePath, width, height);
 		}
 
+		private int AddImageImpl(string filePath, int width = -1, int height = -1)
+		{
+			int result = OutputCode.OK;
+			try
+			{
+				string id = AddImagePart(filePath);
+				AddImageToBody(id, filePath, width, height);
+			}
+			catch (FileNotFoundException)
+            {
+				result = AddImageOutputCode.IMAGE_NOT_FOUND;
+			}
+			return result;
+		}
 
 		/// <summary>
 		/// Add a Style to the document with the given name and style properties. After adding the style it can be referenced by using AddTextWithStyle
@@ -438,15 +450,7 @@ namespace Genexus.Word
 		/// <param name="fileName"></param>
 		private void AddImageToBody(string relationshipId, string fileName)
 		{
-			var img = new BitmapImage(new Uri(fileName, UriKind.RelativeOrAbsolute));
-			double width = img.PixelWidth;
-			double height = img.PixelHeight;
-			var horzRezDpi = img.DpiX;
-			var vertRezDpi = img.DpiY;
-			var element = GetImageElement(relationshipId, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
-			// Append the reference to body, the element should be in a Run.
-			m_DocumentPart.Document.Body.AppendChild(new Paragraph(new Run(element)));
-			
+			AddImageToBody(relationshipId, fileName, -1, -1);
 		}
 
 		/// <summary>
@@ -458,12 +462,23 @@ namespace Genexus.Word
 		/// <param name="height">height in pixels</param>
 		private void AddImageToBody(string relationshipId, string fileName, double width, double height)
 		{
-			var img = new BitmapImage(new Uri(fileName, UriKind.RelativeOrAbsolute));
-			var horzRezDpi = img.DpiX;
-			var vertRezDpi = img.DpiY;
-			var element = GetImageElement(relationshipId, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
-			// Append the reference to body, the element should be in a Run.
-			m_DocumentPart.Document.Body.AppendChild(new Paragraph(new Run(element)));
+			using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+			{
+				var img = new BitmapImage();
+				img.BeginInit();
+				img.StreamSource = fs;
+				img.CacheOption = BitmapCacheOption.OnLoad;
+				img.EndInit();
+
+				width = (width >= 0) ? width: img.PixelWidth;
+				height = (height >= 0) ? height : img.PixelHeight;
+
+				var horzRezDpi = img.DpiX;
+				var vertRezDpi = img.DpiY;
+				var element = GetImageElement(relationshipId, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
+				// Append the reference to body, the element should be in a Run.
+				m_DocumentPart.Document.Body.AppendChild(new Paragraph(new Run(element)));
+			}
 		}
 
 		/// <summary>
@@ -555,8 +570,7 @@ namespace Genexus.Word
 
 			// Avoid to use PowerTools at this time
 			//TextReplacer.SearchAndReplace(m_Document, searchText, replaceText, matchCase);
-			ReplaceTextWithBasicStyle(searchText, replaceText, matchCase, new BasicStyle());
-			return OutputCode.OK;
+			return ReplaceTextWithBasicStyle(searchText, replaceText, matchCase, new BasicStyle());
 		}
 
 		/// <summary>
@@ -588,7 +602,6 @@ namespace Genexus.Word
 		{
 			if (m_Document == null || m_Body == null)
 				return 0;
-		
 
 			int count = 0;
 			var paras = m_Body.Elements<Paragraph>();

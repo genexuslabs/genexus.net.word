@@ -13,9 +13,9 @@ namespace MSWordUnitTesting
 
         [TestInitialize]
         public void Initialize()
-		{
+        {
             s_BasePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-		}
+        }
 
         [TestMethod]
         public void OpenFromTemplate()
@@ -37,13 +37,13 @@ namespace MSWordUnitTesting
                 Assert.AreEqual(doc.Open($"{s_BasePath}\\SampleFullInstance.docx", out _), OutputCode.OK);
 
                 Assert.AreEqual(doc.ReplaceTextWithStyle("Imported:", "新潟県新潟市", true, new List<string>() { "color:blue", "italic", "fontsize:24", "fontfamily:MS PMincho" }), 4);
-       //         Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() { "italic", "bold", "color:green", "fontfamily:MS PGothic" }), 1);
-        //        Assert.AreEqual(doc.ReplaceTextWithStyle("REP03", "Remplazo con bold blue italic", true, new List<string>() { "italic", "bold", "color:blue" }), 1);
+                //         Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() { "italic", "bold", "color:green", "fontfamily:MS PGothic" }), 1);
+                //        Assert.AreEqual(doc.ReplaceTextWithStyle("REP03", "Remplazo con bold blue italic", true, new List<string>() { "italic", "bold", "color:blue" }), 1);
 
 
-          //      doc.AddText("製品企画室", new List<string>() { "fontsize:110" });
-            //    doc.AddText("TEL:", new List<string>() { "italic" });
-             //   doc.AddText("FAX:", new List<string>() { "fontsize:54", "color:pink" });
+                //      doc.AddText("製品企画室", new List<string>() { "fontsize:110" });
+                //    doc.AddText("TEL:", new List<string>() { "italic" });
+                //   doc.AddText("FAX:", new List<string>() { "fontsize:54", "color:pink" });
 
                 doc.Save();
             }
@@ -56,12 +56,12 @@ namespace MSWordUnitTesting
             using (WordServerDocument doc = new WordServerDocument())
             {
                 File.Copy($"{s_BasePath}\\TemplateSample.docx", $"{s_BasePath}\\Sample.docx", true);
-              
+
                 Assert.AreEqual(doc.Open($"{s_BasePath}\\Sample.docx", out _), OutputCode.OK);
-  
-                Assert.AreEqual(doc.ReplaceTextWithStyle("REP01", "新潟県新潟市", true, new List<string>() { "color:blue", "italic" , "fontsize:24", "fontfamily:MS PMincho" }), 2);
-                Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() {  "italic" , "bold" , "color:green", "fontfamily:MS PGothic"}), 1);
-                Assert.AreEqual(doc.ReplaceTextWithStyle("REP03", "Remplazo con bold blue italic", true, new List<string>() { "italic", "bold" , "color:blue"}), 1);
+
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP01", "新潟県新潟市", true, new List<string>() { "color:blue", "italic", "fontsize:24", "fontfamily:MS PMincho" }), 2);
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP02", "中央区米山", true, new List<string>() { "italic", "bold", "color:green", "fontfamily:MS PGothic" }), 1);
+                Assert.AreEqual(doc.ReplaceTextWithStyle("REP03", "Remplazo con bold blue italic", true, new List<string>() { "italic", "bold", "color:blue" }), 1);
 
 
                 doc.AddText("製品企画室", new List<string>() { "fontsize:110" });
@@ -70,7 +70,7 @@ namespace MSWordUnitTesting
 
                 doc.Save();
             }
-            
+
         }
 
         [TestMethod]
@@ -128,7 +128,7 @@ namespace MSWordUnitTesting
             doc.AddText("Italic", new List<string>() { "italic" });
             doc.AddText("FontSize 54", new List<string>() { "fontsize:54" });
             doc.AddText("color red italic", new List<string>() { "color:red", "italic" });
-            doc.AddText("This text without format", new List<string>() );
+            doc.AddText("This text without format", new List<string>());
 
 
             doc.AddText("Bold", new List<string>() { "bold", "numbering" });
@@ -153,8 +153,8 @@ namespace MSWordUnitTesting
 
             doc.AddText("Bold", new List<string>() { "bold", "bullet", "level:0" });
             doc.AddText("Italic", new List<string>() { "italic", "bullet", "level:1" });
-            doc.AddText("FontSize 54", new List<string>() { "fontsize:54", "bullet",  "level:1" });
-            doc.AddText("color red italic", new List<string>() { "color:red", "italic", "bullet",  "level:2" });
+            doc.AddText("FontSize 54", new List<string>() { "fontsize:54", "bullet", "level:1" });
+            doc.AddText("color red italic", new List<string>() { "color:red", "italic", "bullet", "level:2" });
             doc.AddText("This text without format", new List<string>());
             doc.AddRuledLine(60);
 
@@ -164,7 +164,7 @@ namespace MSWordUnitTesting
             doc.AddText("FontSize 54", new List<string>() { "fontsize:54", "numbering" });
             doc.AddText("color red italic", new List<string>() { "color:red", "italic", "numbering" });
             doc.AddText("This text without format", new List<string>());
-            doc.AddText("          d                                                ", new List<string>() { "underline"});
+            doc.AddText("          d                                                ", new List<string>() { "underline" });
             doc.AddRuledLine(40);
 
 
@@ -180,8 +180,8 @@ namespace MSWordUnitTesting
 
             doc.AddText("Bold", new List<string>() { "bold" });
 
-              doc.AddImage($"{s_BasePath}\\uno.gif", 100, 100);
-                doc.AddImage($"{s_BasePath}\\dos.png", 50, 50);
+            doc.AddImage($"{s_BasePath}\\uno.gif", 100, 100);
+            doc.AddImage($"{s_BasePath}\\dos.png", 50, 50);
             doc.AddImage($"{s_BasePath}\\tres.jpeg", 20, 20);
 
             doc.Save();
@@ -218,7 +218,7 @@ namespace MSWordUnitTesting
                 doc.AddText("This text without format for line: " + i, new List<string>());
                 doc.EndParagraph();
             }
-            
+
 
             doc.Save();
             doc.Close();

@@ -342,7 +342,7 @@ namespace Genexus.Word
 		/// Add text with the given properties 
 		/// </summary>
 		/// <param name="text">The text to be added</param>
-		/// <param name="properties">Properties to be set for the new paragraph</param>
+		/// <param name="properties">Properties to be set for the added text</param>
 		/// <returns></returns>
 		public int AddText(string text, List<string> properties)
         {
@@ -357,7 +357,7 @@ namespace Genexus.Word
 
 
 		/// <summary>
-		/// Start paragraph
+		/// Starts paragraph
 		/// </summary>
 		/// <returns></returns>
 		public int StartParagraph()
@@ -379,7 +379,7 @@ namespace Genexus.Word
 	
 
 		/// <summary>
-		/// End paragraph
+		/// Ends the current paragraph
 		/// </summary>
 		/// <returns></returns>
 		public int EndParagraph()
@@ -555,8 +555,8 @@ namespace Genexus.Word
 				var horzRezDpi = img.DpiX;
 				var vertRezDpi = img.DpiY;
 				var element = GetImageElement(relationshipId, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
-				// Append the reference to body, the element should be in a Run.				
-				m_DocumentPart.Document.Body.AppendChild(CreateOrReuseParagraph(new Run(element)));
+				// Append the reference to body, the element should be in a Run.
+				CreateOrReuseParagraph(new Run(element));
 			}
 		}
 

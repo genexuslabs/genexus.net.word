@@ -157,7 +157,9 @@ namespace Genexus.Word.Shapes
 
             solidFill1.Append(rgbColorModelHex1);
 
-            A.Outline outline1 = new A.Outline() { Width = 19050 };
+            A.Outline outline1 = new A.Outline() { 
+                Width = Math.Max(12700, (Int32Value)(12700 * Properties.StrokeWidth))
+            };
 
             A.SolidFill solidFill2 = new A.SolidFill();
             A.RgbColorModelHex rgbColorModelHex2 = new A.RgbColorModelHex()
@@ -166,15 +168,12 @@ namespace Genexus.Word.Shapes
             };
 
             solidFill2.Append(rgbColorModelHex2);
-            A.Miter miter1 = new A.Miter()
-            {
-                Limit = 800000
-            };
+           
             A.HeadEnd headEnd1 = new A.HeadEnd();
             A.TailEnd tailEnd1 = new A.TailEnd();
 
             outline1.Append(solidFill2);
-            outline1.Append(miter1);
+            outline1.Append(new A.Miter());
             outline1.Append(headEnd1);
             outline1.Append(tailEnd1);
 
@@ -213,7 +212,7 @@ namespace Genexus.Word.Shapes
 
             txtInfo.Append(txtContent);
 
-            Wps.TextBodyProperties textBodyProperties1 = new Wps.TextBodyProperties()
+            Wps.TextBodyProperties textBodyProperties1 = new Wps.TextBodyProperties(new A.NoAutoFit())
             {
                 Rotation = 0,
                 Vertical = A.TextVerticalValues.Horizontal,
@@ -226,11 +225,7 @@ namespace Genexus.Word.Shapes
                 AnchorCenter = false,
                 UpRight = true
             };
-
-            A.NoAutoFit noAutoFit1 = new A.NoAutoFit();
-
-            textBodyProperties1.Append(noAutoFit1);
-
+            
             wordprocessingShape1.Append(nonVisualDrawingShapeProperties1);
             wordprocessingShape1.Append(shapeProperties1);
             wordprocessingShape1.Append(txtInfo);

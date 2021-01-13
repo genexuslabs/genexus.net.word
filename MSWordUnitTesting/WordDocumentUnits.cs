@@ -1,6 +1,5 @@
 ﻿using Genexus.Word;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -184,6 +183,40 @@ namespace MSWordUnitTesting
               doc.AddImage($"{s_BasePath}\\uno.gif", 100, 100);
                 doc.AddImage($"{s_BasePath}\\dos.png", 50, 50);
             doc.AddImage($"{s_BasePath}\\tres.jpeg", 20, 20);
+
+            doc.Save();
+            doc.Close();
+        }
+
+
+        [TestMethod]
+        public void CreationParagraphsWithRectangleShape()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            string filePath = $"{s_BasePath}\\rectangle-shape.docx";
+            File.Delete(filePath);
+            Assert.AreEqual(doc.Create($"{s_BasePath}\\rectangle-shape.docx", true, out _), OutputCode.OK);
+
+
+            doc.AddText("Bold", new List<string>() { "bold" });
+            doc.AddText("Italic", new List<string>() { "italic" });
+            doc.AddText("FontSize 54", new List<string>() { "fontsize:54" });
+            doc.AddText("color red italic", new List<string>() { "color:red", "italic" });
+            doc.AddText("This text without format", new List<string>());
+            doc.AddText("This text without format", new List<string>());
+            doc.AddText("This text without format", new List<string>());
+            doc.AddText("This text without format", new List<string>());
+
+            doc.AddShapeWithText("", "R1", 300, 300);
+            doc.AddText("This text without format", new List<string>());
+            doc.AddText("This text without format", new List<string>());
+            doc.AddText("This text without format", new List<string>());
+            
+            doc.AddShapeWithText("", "R2", 300, 300);
+            doc.AddShapeWithText("", "R3", 300, 300);
+            doc.AddShapeWithText("", "R4", 300, 300);
+            doc.AddShapeWithText("", "R5", 300, 300);
+            
 
             doc.Save();
             doc.Close();

@@ -57,6 +57,9 @@
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
     <Compile Include="NumberingPart.cs" />
+    <Compile Include="Shapes\CustomShape.cs" />
+    <Compile Include="Shapes\CustomShapeBuilder.cs" />
+    <Compile Include="Shapes\RectangleShape.cs" />
     <Compile Include="StyleProperties.cs" />
     <Compile Include="WordDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

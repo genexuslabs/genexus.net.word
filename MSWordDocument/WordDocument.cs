@@ -10,8 +10,7 @@ using System.Windows.Media.Imaging;
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
-
-
+using Genexus.Word.Shapes;
 
 namespace Genexus.Word
 {
@@ -29,6 +28,9 @@ namespace Genexus.Word
 		// Should reset numbering
 		private bool m_ResetNumbering = true;
 		// The underline main body of the Document
+		// Numbering document property id
+		private uint m_LastDocumentPropertyId = 1;
+
 		private Body m_Body;
 		// The underline Styles part of the Document
 		private Styles m_Styles;
@@ -689,6 +691,31 @@ namespace Genexus.Word
 				}
 			}
 			return count;
+		}
+
+
+		/// <summary>
+		/// Adds predefined shape <paramref name="shapeId"/> with a custom text <paramref name="shapeInnetText"/>
+		/// </summary>
+		/// <param name="shapeId"></param>
+		/// <param name="shapeInnetText"></param>		
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <returns></returns>
+		public int AddShapeWithText(string shapeId, string innerText, double width, double height)
+		{
+			if (m_Document == null || m_Body == null)
+				return 0;
+			
+			Paragraph p = new Paragraph();
+			
+			Run r = new Run(new RunProperties(new NoProof()));
+			
+			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++,  innerText, width, height));
+			p.Append(r);
+			
+			m_DocumentPart.Document.Body.AppendChild(p);
+			return OutputCode.OK;
 		}
 
 		#endregion

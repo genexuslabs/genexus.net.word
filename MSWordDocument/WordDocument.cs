@@ -342,32 +342,38 @@ namespace Genexus.Word
 		/// <param name="properties">Properties to be set for the new paragraph</param>
 		/// <returns></returns>
 		public int AddText(string text, List<string> properties)
-		{
-			if (m_Document == null || m_Body == null)
-				return OutputCode.INVALID_OPERATION;
-			Paragraph p = new Paragraph();
-			if (properties.Contains("numbering") || properties.Contains("bullet"))
-			{
-				AddNumberingProperties(properties, p);
-			}
-			else
-				m_ResetNumbering = true;
-			
-			Run r = new Run();
-			r.Append(new RunProperties(GetProperties(properties)));
-			p.Append(r);
-			Text t = new Text(text);
-			r.Append(t);
+        {
+            if (m_Document == null || m_Body == null)
+                return OutputCode.INVALID_OPERATION;
+            Paragraph p = new Paragraph();
+			p.Append(GetTextRun(p, text, properties));
 			m_Body.Append(p);
-			return OutputCode.OK;
-		}
+            return OutputCode.OK;
+        }
 
-		/// <summary>
-		/// Numbering properties added to the given paragraph
-		/// </summary>
-		/// <param name="properties"></param>
-		/// <param name="p"></param>
-		private void AddNumberingProperties(List<string> properties, Paragraph p)
+        private Run GetTextRun(Paragraph parentP, string text, List<string> properties)
+        {
+            if (properties.Contains("numbering") || properties.Contains("bullet"))
+            {
+                AddNumberingProperties(properties, parentP);
+            }
+            else
+                m_ResetNumbering = true;
+
+            Run r = new Run();
+            r.Append(new RunProperties(GetProperties(properties)));
+            
+            Text t = new Text(text);
+            r.Append(t);
+			return r;
+        }
+
+        /// <summary>
+        /// Numbering properties added to the given paragraph
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <param name="p"></param>
+        private void AddNumberingProperties(List<string> properties, Paragraph p)
 		{
 			if (properties.Contains("numbering") && m_ResetNumbering)
 			{
@@ -702,7 +708,7 @@ namespace Genexus.Word
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <returns></returns>
-		public int AddShapeWithText(string shapeId, string shapeText, string text, double width, double height)
+		public int AddShapeWithText(string shapeId, string shapeText, string text, double width, double height, List<string> properties = null)
 		{
 			if (m_Document == null || m_Body == null)
 				return 0;
@@ -713,7 +719,7 @@ namespace Genexus.Word
 			
 			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++, shapeText, width, height));
 			p.Append(r);
-			p.Append(new Run(new Text(text)));
+			p.Append(GetTextRun(p, text, properties));
 
 			m_DocumentPart.Document.Body.AppendChild(p);
 			return OutputCode.OK;

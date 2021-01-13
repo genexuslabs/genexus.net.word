@@ -209,7 +209,7 @@ namespace MSWordUnitTesting
 
             for (var i = 0; i < 4; i++)
             {
-                doc.AddShapeWithText("", "R" + i, "Right Side Text: " + i, 300, 300);
+                doc.AddShapeWithText("", "R" + i, "Right Side Text: " + i, 300, 300, new List<string>() { "color:red", "italic" });
                 doc.AddText("This text without format for line: " + i, new List<string>());
             }            
             

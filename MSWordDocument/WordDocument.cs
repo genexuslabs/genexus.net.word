@@ -698,11 +698,11 @@ namespace Genexus.Word
 		/// Adds predefined shape <paramref name="shapeId"/> with a custom text <paramref name="shapeInnetText"/>
 		/// </summary>
 		/// <param name="shapeId"></param>
-		/// <param name="shapeInnetText"></param>		
+		/// <param name="shapeInnetText"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <returns></returns>
-		public int AddShapeWithText(string shapeId, string innerText, double width, double height)
+		public int AddShapeWithText(string shapeId, string shapeText, string text, double width, double height)
 		{
 			if (m_Document == null || m_Body == null)
 				return 0;
@@ -711,9 +711,10 @@ namespace Genexus.Word
 			
 			Run r = new Run(new RunProperties(new NoProof()));
 			
-			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++,  innerText, width, height));
+			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++, shapeText, width, height));
 			p.Append(r);
-			
+			p.Append(new Run(new Text(text)));
+
 			m_DocumentPart.Document.Body.AppendChild(p);
 			return OutputCode.OK;
 		}

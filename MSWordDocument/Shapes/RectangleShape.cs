@@ -59,22 +59,40 @@ namespace Genexus.Word.Shapes
                 LayoutInCell = true,
                 AllowOverlap = true,
                 SimplePosition = new Wp.SimplePosition() { X = 0L, Y = 0L },
-                HorizontalPosition = new Wp.HorizontalPosition() { RelativeFrom = Wp.HorizontalRelativePositionValues.Column }
+                HorizontalPosition = new Wp.HorizontalPosition()
+                {
+                    RelativeFrom = Wp.HorizontalRelativePositionValues.Column,
+                    PositionOffset = new Wp.PositionOffset()
+                    {
+                        Text = "-493395"
+                    }
+
+                },
+                VerticalPosition = new Wp.VerticalPosition()
+                {
+                    RelativeFrom = Wp.VerticalRelativePositionValues.Paragraph,
+                    PositionOffset = new Wp.PositionOffset()
+                    {
+                        Text = "0"
+                    }
+                },
+            };
+            Wp.Extent extent1 = new Wp.Extent() { 
+                Cx = 382270L, Cy = 230505L 
             };
 
-            Wp.PositionOffset positionOffset1 = new Wp.PositionOffset() { Text = "-493395" };
+            Wp.EffectExtent effectExtent1 = new Wp.EffectExtent() { 
+                LeftEdge = 15240L, 
+                TopEdge = 15875L, 
+                RightEdge = 12065L, 
+                BottomEdge = 10795L 
+            };
 
-            anchor.HorizontalPosition.Append(positionOffset1);
-
-            Wp.VerticalPosition verticalPosition1 = new Wp.VerticalPosition() { RelativeFrom = Wp.VerticalRelativePositionValues.Paragraph };
-            Wp.PositionOffset positionOffset2 = new Wp.PositionOffset();
-            positionOffset2.Text = "156210";
-
-            verticalPosition1.Append(positionOffset2);
-            Wp.Extent extent1 = new Wp.Extent() { Cx = 382270L, Cy = 230505L };
-            Wp.EffectExtent effectExtent1 = new Wp.EffectExtent() { LeftEdge = 15240L, TopEdge = 15875L, RightEdge = 12065L, BottomEdge = 10795L };
             Wp.WrapNone wrapNone1 = new Wp.WrapNone();
-            Wp.DocProperties docProperties1 = new Wp.DocProperties() { Id = docPropId, Name = "Text Box " + docPropId };
+            Wp.DocProperties docProperties1 = new Wp.DocProperties() { 
+                Id = docPropId, 
+                Name = "Text Box " + docPropId 
+            };
 
 
             Wp.NonVisualGraphicFrameDrawingProperties nonVisualGraphicFrameDrawingProperties1 = new Wp.NonVisualGraphicFrameDrawingProperties();
@@ -190,8 +208,7 @@ namespace Genexus.Word.Shapes
             percentageHeight1.Text = "0";
 
             relativeHeight1.Append(percentageHeight1);
-            
-            anchor.Append(verticalPosition1);
+
             anchor.Append(extent1);
             anchor.Append(effectExtent1);
             anchor.Append(wrapNone1);

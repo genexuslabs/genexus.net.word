@@ -207,15 +207,11 @@ namespace MSWordUnitTesting
             doc.AddText("This text without format", new List<string>());
             doc.AddText("This text without format", new List<string>());
 
-            doc.AddShapeWithText("", "R1", 300, 300);
-            doc.AddText("This text without format", new List<string>());
-            doc.AddText("This text without format", new List<string>());
-            doc.AddText("This text without format", new List<string>());
-            
-            doc.AddShapeWithText("", "R2", 300, 300);
-            doc.AddShapeWithText("", "R3", 300, 300);
-            doc.AddShapeWithText("", "R4", 300, 300);
-            doc.AddShapeWithText("", "R5", 300, 300);
+            for (var i = 0; i < 4; i++)
+            {
+                doc.AddShapeWithText("", "R" + i, "Right Side Text: " + i, 300, 300);
+                doc.AddText("This text without format for line: " + i, new List<string>());
+            }            
             
 
             doc.Save();

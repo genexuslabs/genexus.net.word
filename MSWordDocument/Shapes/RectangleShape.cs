@@ -8,11 +8,14 @@ using Wp14 = DocumentFormat.OpenXml.Office2010.Word.Drawing;
 using V = DocumentFormat.OpenXml.Vml;
 using Ovml = DocumentFormat.OpenXml.Vml.Office;
 using DocumentFormat.OpenXml.Wordprocessing;
+using MSWordDocument;
+using Genexus.Word.Helpers;
 
 namespace Genexus.Word.Shapes
 {
     public class RectangleShape : CustomShape
     {
+        #region 
         public RectangleShape()
         {
             RequiredImports = new Dictionary<string, string>()
@@ -35,6 +38,9 @@ namespace Genexus.Word.Shapes
                 { "wps", "http://schemas.microsoft.com/office/word/2010/wordprocessingShape"}
             };
         }
+
+        #endregion
+
         public override OpenXmlCompositeElement Build()
         {
             string sElementId = Guid.NewGuid().ToString();
@@ -45,7 +51,7 @@ namespace Genexus.Word.Shapes
             AlternateContentChoice alternateContentChoice1 = new AlternateContentChoice() { Requires = "wps" };
 
             Drawing drawing1 = new Drawing();
-
+           
             Wp.Anchor anchor = new Wp.Anchor()
             {
                 DistanceFromTop = (UInt32Value)0U,
@@ -64,7 +70,7 @@ namespace Genexus.Word.Shapes
                     RelativeFrom = Wp.HorizontalRelativePositionValues.Column,
                     PositionOffset = new Wp.PositionOffset()
                     {
-                        Text = "-493395"
+                        Text = MathOpenXml.CentimetersToEMU(Properties.PositionLeft).ToString()
                     }
 
                 },
@@ -73,7 +79,7 @@ namespace Genexus.Word.Shapes
                     RelativeFrom = Wp.VerticalRelativePositionValues.Paragraph,
                     PositionOffset = new Wp.PositionOffset()
                     {
-                        Text = "0"
+                        Text = MathOpenXml.CentimetersToEMU(Properties.PositionTop).ToString()
                     }
                 },
             };
@@ -183,7 +189,7 @@ namespace Genexus.Word.Shapes
 
             runProperties2.Append(runFonts1);
             Text text1 = new Text();
-            text1.Text = Text;
+            text1.Text = Properties.InnerText;
 
             run2.Append(runProperties2);
             run2.Append(text1);
@@ -195,7 +201,18 @@ namespace Genexus.Word.Shapes
 
             textBoxInfo21.Append(textBoxContent1);
 
-            Wps.TextBodyProperties textBodyProperties1 = new Wps.TextBodyProperties() { Rotation = 0, Vertical = A.TextVerticalValues.Horizontal, Wrap = A.TextWrappingValues.Square, LeftInset = 74295, TopInset = 8890, RightInset = 74295, BottomInset = 8890, Anchor = A.TextAnchoringTypeValues.Top, AnchorCenter = false, UpRight = true };
+            Wps.TextBodyProperties textBodyProperties1 = new Wps.TextBodyProperties() { 
+                Rotation = 0, 
+                Vertical = A.TextVerticalValues.Horizontal, 
+                Wrap = A.TextWrappingValues.Square, 
+                LeftInset = 74295, 
+                TopInset = 8890, 
+                RightInset = 74295, 
+                BottomInset = 8890, 
+                Anchor = A.TextAnchoringTypeValues.Top, 
+                AnchorCenter = false, UpRight = true 
+            };
+
             A.NoAutoFit noAutoFit1 = new A.NoAutoFit();
 
             textBodyProperties1.Append(noAutoFit1);
@@ -265,7 +282,7 @@ namespace Genexus.Word.Shapes
                 Id = "Text Box " + sElementId,
                 Style = "position:absolute;margin-left:-38.85pt;margin-top:12.3pt;width:30.1pt;height:18.15pt;z-index:251645952;visibility:visible;mso-wrap-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;mso-position-horizontal-relative:text;mso-position-vertical:absolute;mso-position-vertical-relative:text;mso-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-relative:page;v-text-anchor:top",
                 OptionalString = "_x0000_s1026",
-                StrokeWeight = "1.5pt",
+                StrokeWeight = Helper.ToString(Properties.StrokeWeight, "1.5pt"),
                 Type = "#_x0000_t202",
                 EncodedPackage = "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\n"
             };
@@ -304,7 +321,7 @@ namespace Genexus.Word.Shapes
 
             runProperties3.Append(runFonts2);
             Text text2 = new Text();
-            text2.Text = Text;
+            text2.Text = Properties.InnerText;
 
             run3.Append(runProperties3);
             run3.Append(text2);

@@ -31,6 +31,9 @@ namespace Genexus.Word
 		// Numbering document property id
 		private uint m_LastDocumentPropertyId = 1;
 
+		// Current Paragraph
+		private Paragraph m_CurrentParagraph;
+
 		private Body m_Body;
 		// The underline Styles part of the Document
 		private Styles m_Styles;
@@ -345,13 +348,72 @@ namespace Genexus.Word
         {
             if (m_Document == null || m_Body == null)
                 return OutputCode.INVALID_OPERATION;
-            Paragraph p = new Paragraph();
+
+			Paragraph p = CreateOrReuseParagraph();
 			p.Append(GetTextRun(p, text, properties));
-			m_Body.Append(p);
             return OutputCode.OK;
         }
 
-        private Run GetTextRun(Paragraph parentP, string text, List<string> properties)
+
+
+		/// <summary>
+		/// Start paragraph
+		/// </summary>
+		/// <returns></returns>
+		public int StartParagraph()
+		{
+			if (m_Document == null || m_Body == null)
+				return OutputCode.INVALID_OPERATION;
+
+			if (m_CurrentParagraph != null)
+            {
+				//Paragraph is already open
+				return OutputCode.INVALID_OPERATION;
+			}
+
+			m_CurrentParagraph = new Paragraph();
+			m_DocumentPart.Document.Body.AppendChild(m_CurrentParagraph);
+			return OutputCode.OK;
+		}
+
+	
+
+		/// <summary>
+		/// End paragraph
+		/// </summary>
+		/// <returns></returns>
+		public int EndParagraph()
+		{
+			if (m_Document == null || m_Body == null)
+				return OutputCode.INVALID_OPERATION;
+
+			if (m_CurrentParagraph == null)
+			{
+				//Paragraph is not open
+				return OutputCode.INVALID_OPERATION;
+			}
+
+			m_CurrentParagraph = null;
+			return OutputCode.OK;
+		}
+
+		private Paragraph CreateOrReuseParagraph(OpenXmlCompositeElement childs = null)
+		{
+			if (m_CurrentParagraph == null)
+			{
+				//Paragraph is not open
+				Paragraph p = new Paragraph(childs);
+				m_DocumentPart.Document.Body.AppendChild(p);
+				return p;
+			}
+			if (childs != null)
+			{
+				m_CurrentParagraph.Append(childs);
+			}
+			return m_CurrentParagraph;
+		}	
+
+		private Run GetTextRun(Paragraph parentP, string text, List<string> properties)
         {
             if (properties.Contains("numbering") || properties.Contains("bullet"))
             {
@@ -398,7 +460,14 @@ namespace Genexus.Word
 		/// <param name="size"></param>
 		public void AddRuledLine(int size)
 		{
-			Paragraph paragraph2 = new Paragraph() { RsidParagraphMarkRevision = "005D4D9C", RsidParagraphAddition = "00E416D0", RsidParagraphProperties = "005D4D9C", RsidRunAdditionDefault = "0044322C", ParagraphId = "4190A0B2", TextId = "72E25AC7" };
+			Paragraph paragraph2 = new Paragraph() { 
+				RsidParagraphMarkRevision = "005D4D9C", 
+				RsidParagraphAddition = "00E416D0", 
+				RsidParagraphProperties = "005D4D9C", 
+				RsidRunAdditionDefault = "0044322C", 
+				ParagraphId = "4190A0B2", 
+				TextId = "72E25AC7" 
+			};
 			ParagraphProperties paragraphProperties1 = new ParagraphProperties();
 			ParagraphMarkRunProperties paragraphMarkRunProperties1 = new ParagraphMarkRunProperties();
 			Underline underline1 = new Underline() { Val = UnderlineValues.Single };
@@ -484,8 +553,8 @@ namespace Genexus.Word
 				var horzRezDpi = img.DpiX;
 				var vertRezDpi = img.DpiY;
 				var element = GetImageElement(relationshipId, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
-				// Append the reference to body, the element should be in a Run.
-				m_DocumentPart.Document.Body.AppendChild(new Paragraph(new Run(element)));
+				// Append the reference to body, the element should be in a Run.				
+				m_DocumentPart.Document.Body.AppendChild(CreateOrReuseParagraph(new Run(element)));
 			}
 		}
 
@@ -507,7 +576,10 @@ namespace Genexus.Word
 
 			var element = new Drawing(
 				new DW.Inline(
-					new DW.Extent { Cx = (Int64Value)emuWidth, Cy = (Int64Value)emuHeight },
+					new DW.Extent { 
+						Cx = (Int64Value)emuWidth, 
+						Cy = (Int64Value)emuHeight 
+					},
 					new DW.EffectExtent { LeftEdge = 400L, TopEdge = 0L, RightEdge = 0L, BottomEdge = 0L },
 					new DW.DocProperties { Id = (UInt32Value)1U, Name = pictureName },
 					new DW.NonVisualGraphicFrameDrawingProperties(
@@ -674,9 +746,6 @@ namespace Genexus.Word
 			var horzRezDpi = img.DpiX;
 			var vertRezDpi = img.DpiY;
 			
-			
-			
-
 			newProperties.Append(GetImageElement(id, imageFile, "test", width, height, horzRezDpi, vertRezDpi));
 
 			int count = 0;
@@ -701,27 +770,25 @@ namespace Genexus.Word
 
 
 		/// <summary>
-		/// Adds predefined shape <paramref name="shapeId"/> with a custom text <paramref name="shapeInnetText"/>
+		/// Adds predefined shape <paramref name="shapeId"/> with a custom inner shape text <paramref name="shapeText"/>
 		/// </summary>
 		/// <param name="shapeId"></param>
 		/// <param name="shapeInnetText"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
+		/// <param name="posLeft">Left Position of the Shape (in cm)</param>
+		/// <param name="posTop">Top Position of the Shape (in cm)</param>
 		/// <returns></returns>
-		public int AddShapeWithText(string shapeId, string shapeText, string text, double width, double height, List<string> properties = null)
+		public int AddShapeWithText(string shapeId, string shapeText, double width, double height, double posLeft = 0, double posTop = 0, List<string> shapeProperties = null)
 		{
 			if (m_Document == null || m_Body == null)
 				return 0;
-			
-			Paragraph p = new Paragraph();
-			
+
+			Paragraph p = CreateOrReuseParagraph();
 			Run r = new Run(new RunProperties(new NoProof()));
 			
-			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++, shapeText, width, height));
+			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++, shapeText, width, height, posLeft, posTop, shapeProperties));
 			p.Append(r);
-			p.Append(GetTextRun(p, text, properties));
-
-			m_DocumentPart.Document.Body.AppendChild(p);
 			return OutputCode.OK;
 		}
 

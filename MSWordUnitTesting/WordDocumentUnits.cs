@@ -209,8 +209,10 @@ namespace MSWordUnitTesting
 
             for (var i = 0; i < 4; i++)
             {
-                doc.AddShapeWithText("", "R" + i, "Right Side Text: " + i, 300, 300, new List<string>() { "color:red", "italic" });
+                doc.StartParagraph();
+                doc.AddShapeWithText("", "R" + i, 300, 300, 0, -2.1);
                 doc.AddText("This text without format for line: " + i, new List<string>());
+                doc.EndParagraph();
             }            
             
 

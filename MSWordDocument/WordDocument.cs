@@ -415,12 +415,14 @@ namespace Genexus.Word
 
 		private Run GetTextRun(Paragraph parentP, string text, List<string> properties)
         {
-            if (properties.Contains("numbering") || properties.Contains("bullet"))
-            {
-                AddNumberingProperties(properties, parentP);
-            }
-            else
-                m_ResetNumbering = true;
+			if (properties.Contains("numbering") || properties.Contains("bullet"))
+			{
+				AddNumberingProperties(properties, parentP);
+			}
+			else
+			{
+				m_ResetNumbering = true;
+			}
 
             Run r = new Run();
             r.Append(new RunProperties(GetProperties(properties)));

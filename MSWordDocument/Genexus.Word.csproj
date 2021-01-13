@@ -49,8 +49,10 @@
   <ItemGroup>
     <Compile Include="BasicStyle.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="EmuHelper.cs" />
     <Compile Include="ErrorCodes.cs" />
     <Compile Include="ExceptionManager.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

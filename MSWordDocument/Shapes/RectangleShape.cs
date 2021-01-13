@@ -86,8 +86,17 @@ namespace Genexus.Word.Shapes
             Wp.Extent extent1 = new Wp.Extent()
             {
                 Cx = 382270L,
-                Cy = 230505L
+                Cy = 230505L //0.64cm
             };
+
+            /*double emuWidth = width * Constants.EnglishMetricUnitsPerInch / horzRezDpi;
+            double emuHeight = height * Constants.EnglishMetricUnitsPerInch / vertRezDpi;
+
+            extent1 = new Wp.Extent
+            {
+                Cx = (Int64Value)emuWidth,
+                Cy = (Int64Value)emuHeight
+            };*/
 
             Wp.EffectExtent effectExtent1 = new Wp.EffectExtent()
             {

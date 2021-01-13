@@ -69,6 +69,7 @@ namespace Genexus.Word
 				m_Document = WordprocessingDocument.Open(fileName, true, settings);
 				m_DocumentPart = m_Document.MainDocumentPart;
 				m_StylesPart = m_Document.MainDocumentPart.StyleDefinitionsPart;
+				m_CurrentParagraph = null;
 				if (m_StylesPart != null)
 					m_Styles = m_StylesPart.Styles;
 
@@ -85,40 +86,6 @@ namespace Genexus.Word
 				return OutputCode.FAIL_OPEN;
 			}
 		}
-
-		public void AddSampleCode()
-		{
-			TextBoxInfo2 textBoxInfo21 = new TextBoxInfo2();
-			TextBoxContent textBoxContent1 = new TextBoxContent();
-
-			Paragraph paragraph7 = new Paragraph() { RsidParagraphMarkRevision = "00FC6179", RsidParagraphAddition = "00F60DF2", RsidParagraphProperties = "00DE46A1", RsidRunAdditionDefault = "00F60DF2", ParagraphId = "7C1AB0AA", TextId = "77777777" };
-
-			ParagraphProperties paragraphProperties3 = new ParagraphProperties();
-			Justification justification4 = new Justification() { Val = JustificationValues.Center };
-
-			paragraphProperties3.Append(justification4);
-
-			Run run7 = new Run() { RsidRunProperties = "00FC6179" };
-
-			RunProperties runProperties2 = new RunProperties();
-			RunFonts runFonts11 = new RunFonts() { Hint = FontTypeHintValues.EastAsia };
-
-			runProperties2.Append(runFonts11);
-			Text text2 = new Text();
-			text2.Text = "H";
-
-			run7.Append(runProperties2);
-			run7.Append(text2);
-
-			paragraph7.Append(paragraphProperties3);
-			paragraph7.Append(run7);
-
-			textBoxContent1.Append(paragraph7);
-			textBoxInfo21.Append(textBoxContent1);
-
-
-		}
-
 
 		/// <summary>
 		/// Create a word document
@@ -364,13 +331,7 @@ namespace Genexus.Word
 		{
 			if (m_Document == null || m_Body == null)
 				return OutputCode.INVALID_OPERATION;
-
-			if (m_CurrentParagraph != null)
-            {
-				//Paragraph is already open
-				return OutputCode.INVALID_OPERATION;
-			}
-
+		
 			m_CurrentParagraph = new Paragraph();
 			m_DocumentPart.Document.Body.AppendChild(m_CurrentParagraph);
 			return OutputCode.OK;

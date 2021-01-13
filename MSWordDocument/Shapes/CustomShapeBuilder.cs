@@ -6,7 +6,7 @@ namespace Genexus.Word.Shapes
 {
     public static class CustomShapeBuilder
     {
-        public static OpenXmlCompositeElement BuildRectangle(MainDocumentPart docPart, uint id, string text, double width, double height, double top, double left, List<string> props)
+        public static OpenXmlCompositeElement BuildRectangle(MainDocumentPart docPart, uint id, string text, double width, double height, double left, double top, List<string> props)
         {
             RectangleShape rectangle = new RectangleShape()
             {

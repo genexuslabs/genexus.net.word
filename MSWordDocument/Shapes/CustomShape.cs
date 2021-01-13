@@ -36,7 +36,7 @@ namespace Genexus.Word.Shapes
         public double Width { get; set; }
         public double PositionLeft { get; set; }
         public double PositionTop { get; set; }
-        public double StrokeWeight { get; set; }
+        public double StrokeWidth { get; set; }
         public string InnerText { get; set; }
 
         public static CustomShapeProperties Create(List<string> Props)
@@ -53,8 +53,8 @@ namespace Genexus.Word.Shapes
                         string itemValue = itemSplit[1];
                         switch (itemKey)
                         {
-                            case "strokeweight":
-                                cProps.StrokeWeight = Double.Parse(itemValue);
+                            case "strokewidth":
+                                cProps.StrokeWidth = Double.Parse(itemValue);
                                 break;
                             default:
                                 break;

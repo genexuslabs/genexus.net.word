@@ -214,7 +214,7 @@ namespace MSWordUnitTesting
             for (var i = 0; i < 10; i++)
             {
                 doc.StartParagraph();
-                doc.AddShapeWithText("", "R" + i, 300, 300, (0.15 * i), (-0.4 * i));
+                doc.AddShapeWithText("", "R" + i, 300, 300, (-0.4 * i), (0.15 * i));
                 doc.AddText("This text without format for line: " + i, new List<string>());
                 doc.EndParagraph();
             }

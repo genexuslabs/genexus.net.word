@@ -51,7 +51,7 @@ namespace Genexus.Word.Shapes
             AlternateContentChoice alternateContentChoice1 = new AlternateContentChoice() { Requires = "wps" };
 
             Drawing drawing1 = new Drawing();
-           
+
             Wp.Anchor anchor = new Wp.Anchor()
             {
                 DistanceFromTop = (UInt32Value)0U,
@@ -141,23 +141,35 @@ namespace Genexus.Word.Shapes
             transform2D1.Append(offset1);
             transform2D1.Append(extents1);
 
-            A.PresetGeometry presetGeometry1 = new A.PresetGeometry() { Preset = A.ShapeTypeValues.Rectangle };
+            A.PresetGeometry presetGeometry1 = new A.PresetGeometry()
+            {
+                Preset = A.ShapeTypeValues.Rectangle
+            };
             A.AdjustValueList adjustValueList1 = new A.AdjustValueList();
 
             presetGeometry1.Append(adjustValueList1);
 
             A.SolidFill solidFill1 = new A.SolidFill();
-            A.RgbColorModelHex rgbColorModelHex1 = new A.RgbColorModelHex() { Val = "FFFFFF" };
+            A.RgbColorModelHex rgbColorModelHex1 = new A.RgbColorModelHex()
+            {
+                Val = "FFFFFF"
+            };
 
             solidFill1.Append(rgbColorModelHex1);
 
             A.Outline outline1 = new A.Outline() { Width = 19050 };
 
             A.SolidFill solidFill2 = new A.SolidFill();
-            A.RgbColorModelHex rgbColorModelHex2 = new A.RgbColorModelHex() { Val = "000000" };
+            A.RgbColorModelHex rgbColorModelHex2 = new A.RgbColorModelHex()
+            {
+                Val = "000000"
+            };
 
             solidFill2.Append(rgbColorModelHex2);
-            A.Miter miter1 = new A.Miter() { Limit = 800000 };
+            A.Miter miter1 = new A.Miter()
+            {
+                Limit = 800000
+            };
             A.HeadEnd headEnd1 = new A.HeadEnd();
             A.TailEnd tailEnd1 = new A.TailEnd();
 
@@ -171,21 +183,21 @@ namespace Genexus.Word.Shapes
             shapeProperties1.Append(solidFill1);
             shapeProperties1.Append(outline1);
 
-            Wps.TextBoxInfo2 textBoxInfo21 = new Wps.TextBoxInfo2();
+            Wps.TextBoxInfo2 txtInfo = new Wps.TextBoxInfo2();
 
-            TextBoxContent textBoxContent1 = new TextBoxContent();
+            TextBoxContent txtContent = new TextBoxContent();
 
-            Paragraph paragraph1 = new Paragraph();
+            Paragraph paragraph = new Paragraph();
 
-            ParagraphProperties paragraphProperties1 = new ParagraphProperties();
-            Justification justification1 = new Justification() { Val = JustificationValues.Center };
-
-            paragraphProperties1.Append(justification1);
+            ParagraphProperties paragraphProps = new ParagraphProperties(new Justification()
+            {
+                Val = JustificationValues.Center
+            });
 
             Run run2 = new Run();
 
             RunProperties runProperties2 = new RunProperties();
-            RunFonts runFonts1 = new RunFonts() { Hint = FontTypeHintValues.EastAsia };
+            RunFonts runFonts1 = new RunFonts();
 
             runProperties2.Append(runFonts1);
             Text text1 = new Text();
@@ -194,23 +206,25 @@ namespace Genexus.Word.Shapes
             run2.Append(runProperties2);
             run2.Append(text1);
 
-            paragraph1.Append(paragraphProperties1);
-            paragraph1.Append(run2);
+            paragraph.Append(paragraphProps);
+            paragraph.Append(run2);
 
-            textBoxContent1.Append(paragraph1);
+            txtContent.Append(paragraph);
 
-            textBoxInfo21.Append(textBoxContent1);
+            txtInfo.Append(txtContent);
 
-            Wps.TextBodyProperties textBodyProperties1 = new Wps.TextBodyProperties() { 
-                Rotation = 0, 
-                Vertical = A.TextVerticalValues.Horizontal, 
-                Wrap = A.TextWrappingValues.Square, 
-                LeftInset = 74295, 
-                TopInset = 8890, 
-                RightInset = 74295, 
-                BottomInset = 8890, 
-                Anchor = A.TextAnchoringTypeValues.Top, 
-                AnchorCenter = false, UpRight = true 
+            Wps.TextBodyProperties textBodyProperties1 = new Wps.TextBodyProperties()
+            {
+                Rotation = 0,
+                Vertical = A.TextVerticalValues.Horizontal,
+                Wrap = A.TextWrappingValues.Square,
+                LeftInset = 74295,
+                TopInset = 8890,
+                RightInset = 74295,
+                BottomInset = 8890,
+                Anchor = A.TextAnchoringTypeValues.Top,
+                AnchorCenter = false,
+                UpRight = true
             };
 
             A.NoAutoFit noAutoFit1 = new A.NoAutoFit();
@@ -219,7 +233,7 @@ namespace Genexus.Word.Shapes
 
             wordprocessingShape1.Append(nonVisualDrawingShapeProperties1);
             wordprocessingShape1.Append(shapeProperties1);
-            wordprocessingShape1.Append(textBoxInfo21);
+            wordprocessingShape1.Append(txtInfo);
             wordprocessingShape1.Append(textBodyProperties1);
 
             graphicData1.Append(wordprocessingShape1);
@@ -250,74 +264,61 @@ namespace Genexus.Word.Shapes
             drawing1.Append(anchor);
 
             alternateContentChoice1.Append(drawing1);
-
-            AlternateContentFallback altContentFallback = new AlternateContentFallback();
-            altContentFallback.AddNamespaceDeclaration("cx", "http://schemas.microsoft.com/office/drawing/2014/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx1", "http://schemas.microsoft.com/office/drawing/2015/9/8/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx2", "http://schemas.microsoft.com/office/drawing/2015/10/21/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx3", "http://schemas.microsoft.com/office/drawing/2016/5/9/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx4", "http://schemas.microsoft.com/office/drawing/2016/5/10/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx5", "http://schemas.microsoft.com/office/drawing/2016/5/11/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx6", "http://schemas.microsoft.com/office/drawing/2016/5/12/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx7", "http://schemas.microsoft.com/office/drawing/2016/5/13/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx8", "http://schemas.microsoft.com/office/drawing/2016/5/14/chartex");
-            altContentFallback.AddNamespaceDeclaration("aink", "http://schemas.microsoft.com/office/drawing/2016/ink");
-            altContentFallback.AddNamespaceDeclaration("am3d", "http://schemas.microsoft.com/office/drawing/2017/model3d");
-            altContentFallback.AddNamespaceDeclaration("w16cex", "http://schemas.microsoft.com/office/word/2018/wordml/cex");
-            altContentFallback.AddNamespaceDeclaration("w16cid", "http://schemas.microsoft.com/office/word/2016/wordml/cid");
-            altContentFallback.AddNamespaceDeclaration("w16", "http://schemas.microsoft.com/office/word/2018/wordml");
-            altContentFallback.AddNamespaceDeclaration("w16se", "http://schemas.microsoft.com/office/word/2015/wordml/symex");
+            AlternateContentFallback altContentFallback = CreateAlternateContent();
 
             Picture picture1 = new Picture();
 
-            V.Shapetype shapetype1 = new V.Shapetype() { Id = "_x0000_t202", CoordinateSize = "21600,21600", OptionalNumber = 202, EdgePath = "m,l,21600r21600,l21600,xe" };
-            V.Stroke stroke1 = new V.Stroke() { JoinStyle = V.StrokeJoinStyleValues.Miter };
-            V.Path path1 = new V.Path() { AllowGradientShape = true, ConnectionPointType = Ovml.ConnectValues.Rectangle };
+            V.Shapetype shapetype1 = new V.Shapetype()
+            {
+
+            };
+
+            V.Stroke stroke1 = new V.Stroke()
+            {
+                JoinStyle = V.StrokeJoinStyleValues.Miter
+            };
+
+            V.Path path1 = new V.Path()
+            {
+                AllowGradientShape = true,
+                ConnectionPointType = Ovml.ConnectValues.Rectangle
+            };
 
             shapetype1.Append(stroke1);
             shapetype1.Append(path1);
 
             V.Shape shape1 = new V.Shape()
             {
-                Id = "Text Box " + sElementId,
-                Style = "position:absolute;margin-left:-38.85pt;margin-top:12.3pt;width:30.1pt;height:18.15pt;z-index:251645952;visibility:visible;mso-wrap-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;mso-position-horizontal-relative:text;mso-position-vertical:absolute;mso-position-vertical-relative:text;mso-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-relative:page;v-text-anchor:top",
-                OptionalString = "_x0000_s1026",
-                StrokeWeight = Helper.ToString(Properties.StrokeWeight, "1.5pt"),
-                Type = "#_x0000_t202",
-                EncodedPackage = "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\n"
+                Id = "Text Box " + sElementId//,
+                                             // Style = "position:absolute;margin-left:-38.85pt;margin-top:12.3pt;width:30.1pt;height:18.15pt;z-index:251645952;visibility:visible;mso-wrap-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;mso-position-horizontal-relative:text;mso-position-vertical:absolute;mso-position-vertical-relative:text;mso-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-relative:page;v-text-anchor:top",                
+                                             //StrokeWeight = Helper.ToPtUnit(Properties.StrokeWidth, 1.5)
             };
 
             V.TextBox textBox1 = new V.TextBox()
             {
-                Inset = "5.85pt,.7pt,5.85pt,.7pt"
+
             };
 
             TextBoxContent textBoxContent2 = new TextBoxContent();
 
             Paragraph paragraph2 = new Paragraph()
             {
-                RsidParagraphMarkRevision = "00FC6179",
-                RsidParagraphAddition = "00F60DF2",
-                RsidParagraphProperties = "00596D2F",
-                RsidRunAdditionDefault = "00F60DF2",
                 ParagraphId = "58F841CD",
                 TextId = "77777777"
             };
 
             ParagraphProperties paragraphProperties2 = new ParagraphProperties();
-            Justification justification2 = new Justification() { 
-                Val = JustificationValues.Center 
+            Justification justification2 = new Justification()
+            {
+                Val = JustificationValues.Center
             };
 
             paragraphProperties2.Append(justification2);
 
-            Run run3 = new Run()
-            {
-                RsidRunProperties = "00FC6179"
-            };
+            Run run3 = new Run();
 
             RunProperties runProperties3 = new RunProperties();
-            RunFonts runFonts2 = new RunFonts() { Hint = FontTypeHintValues.EastAsia };
+            RunFonts runFonts2 = new RunFonts();
 
             runProperties3.Append(runFonts2);
             Text text2 = new Text();
@@ -344,6 +345,27 @@ namespace Genexus.Word.Shapes
             altContent.Append(altContentFallback);
 
             return altContent;
+        }
+
+        private static AlternateContentFallback CreateAlternateContent()
+        {
+            AlternateContentFallback altContentFallback = new AlternateContentFallback();
+            altContentFallback.AddNamespaceDeclaration("cx", "http://schemas.microsoft.com/office/drawing/2014/chartex");
+            altContentFallback.AddNamespaceDeclaration("cx1", "http://schemas.microsoft.com/office/drawing/2015/9/8/chartex");
+            altContentFallback.AddNamespaceDeclaration("cx2", "http://schemas.microsoft.com/office/drawing/2015/10/21/chartex");
+            altContentFallback.AddNamespaceDeclaration("cx3", "http://schemas.microsoft.com/office/drawing/2016/5/9/chartex");
+            altContentFallback.AddNamespaceDeclaration("cx4", "http://schemas.microsoft.com/office/drawing/2016/5/10/chartex");
+            altContentFallback.AddNamespaceDeclaration("cx5", "http://schemas.microsoft.com/office/drawing/2016/5/11/chartex");
+            altContentFallback.AddNamespaceDeclaration("cx6", "http://schemas.microsoft.com/office/drawing/2016/5/12/chartex");
+            altContentFallback.AddNamespaceDeclaration("cx7", "http://schemas.microsoft.com/office/drawing/2016/5/13/chartex");
+            altContentFallback.AddNamespaceDeclaration("cx8", "http://schemas.microsoft.com/office/drawing/2016/5/14/chartex");
+            altContentFallback.AddNamespaceDeclaration("aink", "http://schemas.microsoft.com/office/drawing/2016/ink");
+            altContentFallback.AddNamespaceDeclaration("am3d", "http://schemas.microsoft.com/office/drawing/2017/model3d");
+            altContentFallback.AddNamespaceDeclaration("w16cex", "http://schemas.microsoft.com/office/word/2018/wordml/cex");
+            altContentFallback.AddNamespaceDeclaration("w16cid", "http://schemas.microsoft.com/office/word/2016/wordml/cid");
+            altContentFallback.AddNamespaceDeclaration("w16", "http://schemas.microsoft.com/office/word/2018/wordml");
+            altContentFallback.AddNamespaceDeclaration("w16se", "http://schemas.microsoft.com/office/word/2015/wordml/symex");
+            return altContentFallback;
         }
     }
 }

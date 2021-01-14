@@ -92,15 +92,6 @@ namespace Genexus.Word.Shapes
                 Cy = MathOpenXml.CentimetersToEMU(Properties.Height)
             };
 
-            /*double emuWidth = width * Constants.EnglishMetricUnitsPerInch / horzRezDpi;
-            double emuHeight = height * Constants.EnglishMetricUnitsPerInch / vertRezDpi;
-
-            extent1 = new Wp.Extent
-            {
-                Cx = (Int64Value)emuWidth,
-                Cy = (Int64Value)emuHeight
-            };*/
-
             Wp.EffectExtent effectExtent1 = new Wp.EffectExtent()
             {
                 LeftEdge = 15240L,
@@ -200,20 +191,13 @@ namespace Genexus.Word.Shapes
                 Val = JustificationValues.Center
             });
 
-            Run run2 = new Run();
+            Run textRun = WordServerDocument.GetTextRun(Properties.InnerText, new List<String>()
+            {
 
-            RunProperties runProperties2 = new RunProperties();
-            RunFonts runFonts1 = new RunFonts();
-
-            runProperties2.Append(runFonts1);
-            Text text1 = new Text();
-            text1.Text = Properties.InnerText;
-
-            run2.Append(runProperties2);
-            run2.Append(text1);
-
+            });
+            
             paragraph.Append(paragraphProps);
-            paragraph.Append(run2);
+            paragraph.Append(textRun);
 
             txtContent.Append(paragraph);
 
@@ -289,9 +273,7 @@ namespace Genexus.Word.Shapes
 
             V.Shape shape1 = new V.Shape()
             {
-                Id = "Text Box " + sElementId//,
-                                             // Style = "position:absolute;margin-left:-38.85pt;margin-top:12.3pt;width:30.1pt;height:18.15pt;z-index:251645952;visibility:visible;mso-wrap-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;mso-position-horizontal-relative:text;mso-position-vertical:absolute;mso-position-vertical-relative:text;mso-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-relative:page;v-text-anchor:top",                
-                                             //StrokeWeight = Helper.ToPtUnit(Properties.StrokeWidth, 1.5)
+                Id = "Text Box " + sElementId
             };
 
             V.TextBox textBox1 = new V.TextBox()
@@ -322,7 +304,7 @@ namespace Genexus.Word.Shapes
 
             runProperties3.Append(runFonts2);
             Text text2 = new Text();
-            text2.Text = Properties.InnerText;
+            //text2.Text = Properties.InnerText;
 
             run3.Append(runProperties3);
             run3.Append(text2);

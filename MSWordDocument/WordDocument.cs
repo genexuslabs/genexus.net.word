@@ -385,20 +385,25 @@ namespace Genexus.Word
 				m_ResetNumbering = true;
 			}
 
-            Run r = new Run();
-            r.Append(new RunProperties(GetProperties(properties)));
-            
-            Text t = new Text(text);
-            r.Append(t);
-			return r;
-        }
+			return GetTextRun(text, properties);
+		}
 
-        /// <summary>
-        /// Numbering properties added to the given paragraph
-        /// </summary>
-        /// <param name="properties"></param>
-        /// <param name="p"></param>
-        private void AddNumberingProperties(List<string> properties, Paragraph p)
+		public static Run GetTextRun(string text, List<string> properties)
+		{
+			Run r = new Run();
+			r.Append(new RunProperties(GetProperties(properties)));
+
+			Text t = new Text(text);
+			r.Append(t);
+			return r;
+		}
+
+		/// <summary>
+		/// Numbering properties added to the given paragraph
+		/// </summary>
+		/// <param name="properties"></param>
+		/// <param name="p"></param>
+		private void AddNumberingProperties(List<string> properties, Paragraph p)
 		{
 			if (properties.Contains("numbering") && m_ResetNumbering)
 			{
@@ -589,13 +594,12 @@ namespace Genexus.Word
 		/// </summary>
 		/// <param name="properties"></param>
 		/// <returns></returns>
-		private IEnumerable<OpenXmlElement> GetProperties(List<string> properties)
+		private static IEnumerable<OpenXmlElement> GetProperties(List<string> properties)
 		{
 			foreach (string prop in properties)
 			{
 				if (StyleProperties.Exists(prop))
 					yield return StyleProperties.RunFunctionProperty(prop);
-
 			}
 		}
 

@@ -163,7 +163,7 @@ namespace Genexus.Word.Shapes
 
             A.SolidFill solidFill1 = new A.SolidFill(new A.RgbColorModelHex()
             {
-                Val = Helper.ToColorHex(Properties.FillColor, DEFAULT_FILL_HEX_COLOR)
+                Val = Helper.ToRGBHexColor(Properties.FillColor, DEFAULT_FILL_HEX_COLOR)
             });
             
             A.Outline outline1 = new A.Outline() { 
@@ -172,7 +172,7 @@ namespace Genexus.Word.Shapes
 
             A.SolidFill solidFill2 = new A.SolidFill(new A.RgbColorModelHex()
             {
-                Val = Helper.ToColorHex(Properties.StrokeColor, DEFAULT_STROKE_HEX_COLOR)
+                Val = Helper.ToRGBHexColor(Properties.StrokeColor, DEFAULT_STROKE_HEX_COLOR)
             });
             
 
@@ -218,8 +218,11 @@ namespace Genexus.Word.Shapes
             txtContent.Append(paragraph);
 
             txtInfo.Append(txtContent);
-
-            Wps.TextBodyProperties textBodyProperties1 = new Wps.TextBodyProperties(new A.NoAutoFit())
+                        
+            wordprocessingShape1.Append(nonVisualDrawingShapeProperties1);
+            wordprocessingShape1.Append(shapeProperties1);
+            wordprocessingShape1.Append(txtInfo);
+            wordprocessingShape1.Append(new Wps.TextBodyProperties(new A.NoAutoFit())
             {
                 Rotation = 0,
                 Vertical = A.TextVerticalValues.Horizontal,
@@ -228,15 +231,10 @@ namespace Genexus.Word.Shapes
                 TopInset = 8890,
                 RightInset = 74295,
                 BottomInset = 8890,
-                Anchor = A.TextAnchoringTypeValues.Top,
-                AnchorCenter = false,
-                UpRight = true
-            };
-            
-            wordprocessingShape1.Append(nonVisualDrawingShapeProperties1);
-            wordprocessingShape1.Append(shapeProperties1);
-            wordprocessingShape1.Append(txtInfo);
-            wordprocessingShape1.Append(textBodyProperties1);
+                Anchor = A.TextAnchoringTypeValues.Center,
+                AnchorCenter = true,
+                UpRight = false
+            });
 
             graphicData1.Append(wordprocessingShape1);
 

@@ -203,21 +203,33 @@ namespace MSWordUnitTesting
             doc.AddText("FontSize 54", new List<string>() { "fontsize:54" });
             doc.AddText("color red italic", new List<string>() { "color:red", "italic" });
             doc.AddText("This text without format", new List<string>());
-            doc.AddText("This text without format", new List<string>());
-            doc.AddText("This text without format", new List<string>());
-            doc.AddText("This text without format", new List<string>());
+            doc.AddText("This text without format", new List<string>());            
 
             doc.StartParagraph();
             doc.AddText("Inline text. ", new List<string>());
-            doc.AddText("Inline text.", new List<string>());
+            
             doc.EndParagraph();
-            for (var i = 0; i < 10; i++)
+
+            for (var i = 0; i < 4; i++)
             {
                 doc.StartParagraph();
-                doc.AddShapeWithText("", "R" + i, 3, 2, (-0.4 * i), (0.15 * i), new List<string>() { "strokewidth:1" });
+                doc.AddShapeWithText("", "R" + i, 1.5, 1, (-0.4 * i), (0.15 * i), new List<string>() {
+                    "strokewidth:1",
+                    "color:red",
+                    "fillcolor:white"
+                });
                 doc.AddText("This text without format for line: " + i, new List<string>());
                 doc.EndParagraph();
             }
+
+
+            doc.AddShapeWithText("", "SQUARE", 5, 5, 0, 0, new List<string>() {
+                    "strokewidth:5",
+                    "color:#32a852",
+                    "fillcolor:silver"
+                }
+            );
+
 
             doc.Save();
             doc.Close();

@@ -25,7 +25,7 @@ namespace Genexus.Word
         }
 
 
-        public static string ToColorHex(string colorName, string defaultColorHex = null)
+        public static string ToRGBHexColor(string colorName, string defaultColorHex = null)
         {
             if (string.IsNullOrEmpty(colorName))
             {
@@ -34,11 +34,11 @@ namespace Genexus.Word
 
             if (colorName.StartsWith("#"))
             {
-                return colorName;
+                return colorName.Substring(1);
             }
 
-            int ColorValue = Color.FromName(colorName).ToArgb();
-            return string.Format("{0:x6}", ColorValue);
+            Color color = Color.FromName(colorName);
+            return String.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B).ToUpper();
         }
     }
 }

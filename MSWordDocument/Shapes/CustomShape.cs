@@ -37,6 +37,8 @@ namespace Genexus.Word.Shapes
         public double PositionLeft { get; set; }
         public double PositionTop { get; set; }
         public double StrokeWidth { get; set; }
+        public string StrokeColor { get; set; }
+        public string FillColor { get; set; }
         public string InnerText { get; set; }
 
         public static CustomShapeProperties Create(List<string> Props)
@@ -55,6 +57,12 @@ namespace Genexus.Word.Shapes
                         {
                             case "strokewidth":
                                 cProps.StrokeWidth = Double.Parse(itemValue);
+                                break;
+                            case "color":
+                                cProps.StrokeColor = itemValue;
+                                break;
+                            case "fillcolor":
+                                cProps.FillColor = itemValue;
                                 break;
                             default:
                                 break;

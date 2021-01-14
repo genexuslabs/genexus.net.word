@@ -10,9 +10,9 @@ namespace Genexus.Word.Helpers
     {
         private const int ONEEMUINCENTIMETERS = 360142;
 
-        public static double CentimetersToEMU(double cm)
+        public static int CentimetersToEMU(double cm)
         {
-            return Math.Round(cm * ONEEMUINCENTIMETERS);
+            return (int)Math.Round(cm * ONEEMUINCENTIMETERS);
         }
     }
 }

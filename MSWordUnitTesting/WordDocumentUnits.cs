@@ -214,11 +214,10 @@ namespace MSWordUnitTesting
             for (var i = 0; i < 10; i++)
             {
                 doc.StartParagraph();
-                doc.AddShapeWithText("", "R" + i, 300, 300, (-0.4 * i), (0.15 * i), new List<string>() { "strokewidth:2" });
+                doc.AddShapeWithText("", "R" + i, 3, 2, (-0.4 * i), (0.15 * i), new List<string>() { "strokewidth:1" });
                 doc.AddText("This text without format for line: " + i, new List<string>());
                 doc.EndParagraph();
             }
-
 
             doc.Save();
             doc.Close();

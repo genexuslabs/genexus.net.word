@@ -15,6 +15,9 @@ namespace Genexus.Word.Shapes
 {
     public class RectangleShape : CustomShape
     {
+        private static string DEFAULT_STROKE_HEX_COLOR = "000000";
+        private static string DEFAULT_FILL_HEX_COLOR = "FFFFFF";
+        private static int MIN_STROKE_WIDTH = 12700;
         #region 
         public RectangleShape()
         {
@@ -85,8 +88,8 @@ namespace Genexus.Word.Shapes
             };
             Wp.Extent extent1 = new Wp.Extent()
             {
-                Cx = 382270L,
-                Cy = 230505L //0.64cm
+                Cx = MathOpenXml.CentimetersToEMU(Properties.Width),
+                Cy = MathOpenXml.CentimetersToEMU(Properties.Height)
             };
 
             /*double emuWidth = width * Constants.EnglishMetricUnitsPerInch / horzRezDpi;
@@ -158,26 +161,21 @@ namespace Genexus.Word.Shapes
 
             presetGeometry1.Append(adjustValueList1);
 
-            A.SolidFill solidFill1 = new A.SolidFill();
-            A.RgbColorModelHex rgbColorModelHex1 = new A.RgbColorModelHex()
+            A.SolidFill solidFill1 = new A.SolidFill(new A.RgbColorModelHex()
             {
-                Val = "FFFFFF"
-            };
-
-            solidFill1.Append(rgbColorModelHex1);
-
+                Val = Helper.ToColorHex(Properties.FillColor, DEFAULT_FILL_HEX_COLOR)
+            });
+            
             A.Outline outline1 = new A.Outline() { 
-                Width = Math.Max(12700, (Int32Value)(12700 * Properties.StrokeWidth))
+                Width = Math.Max(MIN_STROKE_WIDTH, (Int32Value)(MIN_STROKE_WIDTH * Properties.StrokeWidth))
             };
 
-            A.SolidFill solidFill2 = new A.SolidFill();
-            A.RgbColorModelHex rgbColorModelHex2 = new A.RgbColorModelHex()
+            A.SolidFill solidFill2 = new A.SolidFill(new A.RgbColorModelHex()
             {
-                Val = "000000"
-            };
+                Val = Helper.ToColorHex(Properties.StrokeColor, DEFAULT_STROKE_HEX_COLOR)
+            });
+            
 
-            solidFill2.Append(rgbColorModelHex2);
-           
             A.HeadEnd headEnd1 = new A.HeadEnd();
             A.TailEnd tailEnd1 = new A.TailEnd();
 

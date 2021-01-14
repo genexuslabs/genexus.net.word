@@ -222,13 +222,25 @@ namespace MSWordUnitTesting
                 doc.EndParagraph();
             }
 
-
-            doc.AddShapeWithText("", "SQUARE", 5, 5, 0, 0, new List<string>() {
+            doc.AddShapeWithText("", "SQUARE", 3, 3, 0, 0, new List<string>() {
                     "strokewidth:5",
                     "color:#32a852",
                     "fillcolor:silver"
                 }
-            );
+            , new List<string>() {
+                    "fontsize:30",
+                    "color:red"
+                });
+
+            doc.AddRuledLine(10);
+            doc.AddShapeWithText("", "SQUARE2", 3, 3, 0, 0, new List<string>() {
+                    "strokewidth:4",
+                    "color:blue"
+                }
+           , new List<string>() {
+                    "fontsize:30",
+                    "color:#32a852"
+               });
 
 
             doc.Save();

@@ -391,7 +391,10 @@ namespace Genexus.Word
 		public static Run GetTextRun(string text, List<string> properties)
 		{
 			Run r = new Run();
-			r.Append(new RunProperties(GetProperties(properties)));
+			if (properties != null)
+			{
+				r.Append(new RunProperties(GetProperties(properties)));
+			}
 
 			Text t = new Text(text);
 			r.Append(t);
@@ -736,17 +739,17 @@ namespace Genexus.Word
 		}
 
 
-		/// <summary>
-		/// Adds predefined shape <paramref name="shapeId"/> with a custom inner shape text <paramref name="shapeText"/>
-		/// </summary>
-		/// <param name="shapeId"></param>
-		/// <param name="shapeInnetText"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="posLeft">Left Position of the Shape (in cm)</param>
-		/// <param name="posTop">Top Position of the Shape (in cm)</param>
-		/// <returns></returns>
-		public int AddShapeWithText(string shapeId, string shapeText, double width, double height, double posLeft = 0, double posTop = 0, List<string> shapeProperties = null)
+        /// <summary>
+        /// Adds predefined shape <paramref name="shapeId"/> with a custom inner shape text <paramref name="shapeText"/>
+        /// </summary>
+        /// <param name="shapeId"></param>
+        /// <param name="shapeInnetText"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="posLeft">Left Position of the Shape (in cm)</param>
+        /// <param name="posTop">Top Position of the Shape (in cm)</param>
+        /// <returns></returns>
+        public int AddShapeWithText(string shapeId, string shapeText, double width, double height, double posLeft = 0, double posTop = 0, List<string> shapeProperties = null, List<string> textProperties = null)
 		{
 			if (m_Document == null || m_Body == null)
 				return 0;
@@ -754,7 +757,7 @@ namespace Genexus.Word
 			Paragraph p = CreateOrReuseParagraph();
 			Run r = new Run(new RunProperties(new NoProof()));
 			
-			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++, shapeText, width, height, posLeft, posTop, shapeProperties));
+			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++, shapeText, width, height, posLeft, posTop, shapeProperties, textProperties));
 			p.Append(r);
 			return OutputCode.OK;
 		}

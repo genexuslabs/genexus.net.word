@@ -73,7 +73,7 @@ namespace Genexus.Word.Shapes
                     RelativeFrom = Wp.HorizontalRelativePositionValues.Column,
                     PositionOffset = new Wp.PositionOffset()
                     {
-                        Text = MathOpenXml.CentimetersToEMU(Properties.PositionLeft).ToString()
+                        Text = MathOpenXml.CentimetersToEMU(ShapeProperties.PositionLeft).ToString()
                     }
 
                 },
@@ -82,14 +82,14 @@ namespace Genexus.Word.Shapes
                     RelativeFrom = Wp.VerticalRelativePositionValues.Paragraph,
                     PositionOffset = new Wp.PositionOffset()
                     {
-                        Text = MathOpenXml.CentimetersToEMU(Properties.PositionTop).ToString()
+                        Text = MathOpenXml.CentimetersToEMU(ShapeProperties.PositionTop).ToString()
                     }
                 },
             };
             Wp.Extent extent1 = new Wp.Extent()
             {
-                Cx = MathOpenXml.CentimetersToEMU(Properties.Width),
-                Cy = MathOpenXml.CentimetersToEMU(Properties.Height)
+                Cx = MathOpenXml.CentimetersToEMU(ShapeProperties.Width),
+                Cy = MathOpenXml.CentimetersToEMU(ShapeProperties.Height)
             };
 
             Wp.EffectExtent effectExtent1 = new Wp.EffectExtent()
@@ -154,18 +154,18 @@ namespace Genexus.Word.Shapes
 
             A.SolidFill solidFill1 = new A.SolidFill(new A.RgbColorModelHex()
             {
-                Val = Helper.ToRGBHexColor(Properties.FillColor, DEFAULT_FILL_HEX_COLOR)
+                Val = Helper.ToRGBHexColor(ShapeProperties.FillColor, DEFAULT_FILL_HEX_COLOR)
             });
-            
-            A.Outline outline1 = new A.Outline() { 
-                Width = Math.Max(MIN_STROKE_WIDTH, (Int32Value)(MIN_STROKE_WIDTH * Properties.StrokeWidth))
+
+            A.Outline outline1 = new A.Outline()
+            {
+                Width = Math.Max(MIN_STROKE_WIDTH, (Int32Value)(MIN_STROKE_WIDTH * ShapeProperties.StrokeWidth))
             };
 
             A.SolidFill solidFill2 = new A.SolidFill(new A.RgbColorModelHex()
             {
-                Val = Helper.ToRGBHexColor(Properties.StrokeColor, DEFAULT_STROKE_HEX_COLOR)
+                Val = Helper.ToRGBHexColor(ShapeProperties.StrokeColor, DEFAULT_STROKE_HEX_COLOR)
             });
-            
 
             A.HeadEnd headEnd1 = new A.HeadEnd();
             A.TailEnd tailEnd1 = new A.TailEnd();
@@ -191,18 +191,15 @@ namespace Genexus.Word.Shapes
                 Val = JustificationValues.Center
             });
 
-            Run textRun = WordServerDocument.GetTextRun(Properties.InnerText, new List<String>()
-            {
+            Run textRun = WordServerDocument.GetTextRun(ShapeProperties.InnerText, TextProperties);
 
-            });
-            
             paragraph.Append(paragraphProps);
             paragraph.Append(textRun);
 
             txtContent.Append(paragraph);
 
             txtInfo.Append(txtContent);
-                        
+
             wordprocessingShape1.Append(nonVisualDrawingShapeProperties1);
             wordprocessingShape1.Append(shapeProperties1);
             wordprocessingShape1.Append(txtInfo);
@@ -230,11 +227,16 @@ namespace Genexus.Word.Shapes
 
             relativeWidth1.Append(percentageWidth1);
 
-            Wp14.RelativeHeight relativeHeight1 = new Wp14.RelativeHeight() { RelativeFrom = Wp14.SizeRelativeVerticallyValues.Page };
-            Wp14.PercentageHeight percentageHeight1 = new Wp14.PercentageHeight();
-            percentageHeight1.Text = "0";
+            Wp14.RelativeHeight relativeHeight1 = new Wp14.RelativeHeight(
+                new Wp14.PercentageHeight()
+                {
+                    Text = "0"
+                }
+            )
+            {
+                RelativeFrom = Wp14.SizeRelativeVerticallyValues.Page
+            };
 
-            relativeHeight1.Append(percentageHeight1);
 
             anchor.Append(extent1);
             anchor.Append(effectExtent1);
@@ -248,106 +250,10 @@ namespace Genexus.Word.Shapes
             drawing1.Append(anchor);
 
             alternateContentChoice1.Append(drawing1);
-            AlternateContentFallback altContentFallback = CreateAlternateContent();
-
-            Picture picture1 = new Picture();
-
-            V.Shapetype shapetype1 = new V.Shapetype()
-            {
-
-            };
-
-            V.Stroke stroke1 = new V.Stroke()
-            {
-                JoinStyle = V.StrokeJoinStyleValues.Miter
-            };
-
-            V.Path path1 = new V.Path()
-            {
-                AllowGradientShape = true,
-                ConnectionPointType = Ovml.ConnectValues.Rectangle
-            };
-
-            shapetype1.Append(stroke1);
-            shapetype1.Append(path1);
-
-            V.Shape shape1 = new V.Shape()
-            {
-                Id = "Text Box " + sElementId
-            };
-
-            V.TextBox textBox1 = new V.TextBox()
-            {
-
-            };
-
-            TextBoxContent textBoxContent2 = new TextBoxContent();
-
-            Paragraph paragraph2 = new Paragraph()
-            {
-                ParagraphId = "58F841CD",
-                TextId = "77777777"
-            };
-
-            ParagraphProperties paragraphProperties2 = new ParagraphProperties();
-            Justification justification2 = new Justification()
-            {
-                Val = JustificationValues.Center
-            };
-
-            paragraphProperties2.Append(justification2);
-
-            Run run3 = new Run();
-
-            RunProperties runProperties3 = new RunProperties();
-            RunFonts runFonts2 = new RunFonts();
-
-            runProperties3.Append(runFonts2);
-            Text text2 = new Text();
-            //text2.Text = Properties.InnerText;
-
-            run3.Append(runProperties3);
-            run3.Append(text2);
-
-            paragraph2.Append(paragraphProperties2);
-            paragraph2.Append(run3);
-
-            textBoxContent2.Append(paragraph2);
-
-            textBox1.Append(textBoxContent2);
-
-            shape1.Append(textBox1);
-
-            picture1.Append(shapetype1);
-            picture1.Append(shape1);
-
-            altContentFallback.Append(picture1);
 
             altContent.Append(alternateContentChoice1);
-            altContent.Append(altContentFallback);
-
             return altContent;
         }
 
-        private static AlternateContentFallback CreateAlternateContent()
-        {
-            AlternateContentFallback altContentFallback = new AlternateContentFallback();
-            altContentFallback.AddNamespaceDeclaration("cx", "http://schemas.microsoft.com/office/drawing/2014/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx1", "http://schemas.microsoft.com/office/drawing/2015/9/8/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx2", "http://schemas.microsoft.com/office/drawing/2015/10/21/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx3", "http://schemas.microsoft.com/office/drawing/2016/5/9/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx4", "http://schemas.microsoft.com/office/drawing/2016/5/10/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx5", "http://schemas.microsoft.com/office/drawing/2016/5/11/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx6", "http://schemas.microsoft.com/office/drawing/2016/5/12/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx7", "http://schemas.microsoft.com/office/drawing/2016/5/13/chartex");
-            altContentFallback.AddNamespaceDeclaration("cx8", "http://schemas.microsoft.com/office/drawing/2016/5/14/chartex");
-            altContentFallback.AddNamespaceDeclaration("aink", "http://schemas.microsoft.com/office/drawing/2016/ink");
-            altContentFallback.AddNamespaceDeclaration("am3d", "http://schemas.microsoft.com/office/drawing/2017/model3d");
-            altContentFallback.AddNamespaceDeclaration("w16cex", "http://schemas.microsoft.com/office/word/2018/wordml/cex");
-            altContentFallback.AddNamespaceDeclaration("w16cid", "http://schemas.microsoft.com/office/word/2016/wordml/cid");
-            altContentFallback.AddNamespaceDeclaration("w16", "http://schemas.microsoft.com/office/word/2018/wordml");
-            altContentFallback.AddNamespaceDeclaration("w16se", "http://schemas.microsoft.com/office/word/2015/wordml/symex");
-            return altContentFallback;
-        }
     }
 }

@@ -9,7 +9,8 @@ namespace Genexus.Word.Shapes
     {
         public uint Id { get; set; }
 
-        public CustomShapeProperties Properties = new CustomShapeProperties();
+        public CustomShapeProperties ShapeProperties = new CustomShapeProperties();
+        public List<string> TextProperties = new List<string>();
 
         protected Dictionary<string, string> RequiredImports = new Dictionary<string, string>();
 

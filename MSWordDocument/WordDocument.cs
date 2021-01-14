@@ -10,8 +10,7 @@ using System.Windows.Media.Imaging;
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
-
-
+using Genexus.Word.Shapes;
 
 namespace Genexus.Word
 {
@@ -29,6 +28,12 @@ namespace Genexus.Word
 		// Should reset numbering
 		private bool m_ResetNumbering = true;
 		// The underline main body of the Document
+		// Numbering document property id
+		private uint m_LastDocumentPropertyId = 1;
+
+		// Current Paragraph
+		private Paragraph m_CurrentParagraph;
+
 		private Body m_Body;
 		// The underline Styles part of the Document
 		private Styles m_Styles;
@@ -64,6 +69,7 @@ namespace Genexus.Word
 				m_Document = WordprocessingDocument.Open(fileName, true, settings);
 				m_DocumentPart = m_Document.MainDocumentPart;
 				m_StylesPart = m_Document.MainDocumentPart.StyleDefinitionsPart;
+				m_CurrentParagraph = null;
 				if (m_StylesPart != null)
 					m_Styles = m_StylesPart.Styles;
 
@@ -80,40 +86,6 @@ namespace Genexus.Word
 				return OutputCode.FAIL_OPEN;
 			}
 		}
-
-		public void AddSampleCode()
-		{
-			TextBoxInfo2 textBoxInfo21 = new TextBoxInfo2();
-			TextBoxContent textBoxContent1 = new TextBoxContent();
-
-			Paragraph paragraph7 = new Paragraph() { RsidParagraphMarkRevision = "00FC6179", RsidParagraphAddition = "00F60DF2", RsidParagraphProperties = "00DE46A1", RsidRunAdditionDefault = "00F60DF2", ParagraphId = "7C1AB0AA", TextId = "77777777" };
-
-			ParagraphProperties paragraphProperties3 = new ParagraphProperties();
-			Justification justification4 = new Justification() { Val = JustificationValues.Center };
-
-			paragraphProperties3.Append(justification4);
-
-			Run run7 = new Run() { RsidRunProperties = "00FC6179" };
-
-			RunProperties runProperties2 = new RunProperties();
-			RunFonts runFonts11 = new RunFonts() { Hint = FontTypeHintValues.EastAsia };
-
-			runProperties2.Append(runFonts11);
-			Text text2 = new Text();
-			text2.Text = "H";
-
-			run7.Append(runProperties2);
-			run7.Append(text2);
-
-			paragraph7.Append(paragraphProperties3);
-			paragraph7.Append(run7);
-
-			textBoxContent1.Append(paragraph7);
-			textBoxInfo21.Append(textBoxContent1);
-
-
-		}
-
 
 		/// <summary>
 		/// Create a word document
@@ -337,27 +309,96 @@ namespace Genexus.Word
 		/// Add text with the given properties 
 		/// </summary>
 		/// <param name="text">The text to be added</param>
-		/// <param name="properties">Properties to be set for the new paragraph</param>
+		/// <param name="properties">Properties to be set for the added text</param>
 		/// <returns></returns>
 		public int AddText(string text, List<string> properties)
+        {
+            if (m_Document == null || m_Body == null)
+                return OutputCode.INVALID_OPERATION;
+
+			Paragraph p = CreateOrReuseParagraph();
+			p.Append(GetTextRun(p, text, properties));
+            return OutputCode.OK;
+        }
+
+
+
+		/// <summary>
+		/// Starts paragraph
+		/// </summary>
+		/// <returns></returns>
+		public int StartParagraph()
 		{
 			if (m_Document == null || m_Body == null)
 				return OutputCode.INVALID_OPERATION;
-			Paragraph p = new Paragraph();
+		
+			m_CurrentParagraph = new Paragraph();
+			m_DocumentPart.Document.Body.AppendChild(m_CurrentParagraph);
+			return OutputCode.OK;
+		}
+
+	
+
+		/// <summary>
+		/// Ends the current paragraph
+		/// </summary>
+		/// <returns></returns>
+		public int EndParagraph()
+		{
+			if (m_Document == null || m_Body == null)
+				return OutputCode.INVALID_OPERATION;
+
+			if (m_CurrentParagraph == null)
+			{
+				//Paragraph is not open
+				return OutputCode.INVALID_OPERATION;
+			}
+
+			m_CurrentParagraph = null;
+			return OutputCode.OK;
+		}
+
+		private Paragraph CreateOrReuseParagraph(OpenXmlCompositeElement childs = null)
+		{
+			if (m_CurrentParagraph == null)
+			{
+				//Paragraph is not open
+				Paragraph p = new Paragraph(childs);
+				m_DocumentPart.Document.Body.AppendChild(p);
+				return p;
+			}
+			if (childs != null)
+			{
+				m_CurrentParagraph.Append(childs);
+			}
+			return m_CurrentParagraph;
+		}	
+
+		private Run GetTextRun(Paragraph parentP, string text, List<string> properties)
+        {
 			if (properties.Contains("numbering") || properties.Contains("bullet"))
 			{
-				AddNumberingProperties(properties, p);
+				AddNumberingProperties(properties, parentP);
 			}
 			else
+			{
 				m_ResetNumbering = true;
-			
+			}
+
+			return GetTextRun(text, properties);
+		}
+
+		public static Run GetTextRun(string text, List<string> properties)
+		{
 			Run r = new Run();
-			r.Append(new RunProperties(GetProperties(properties)));
-			p.Append(r);
+			if (properties != null)
+			{
+				r.Append(new RunProperties(GetProperties(properties)));
+			}
+
 			Text t = new Text(text);
 			r.Append(t);
-			m_Body.Append(p);
-			return OutputCode.OK;
+			return r;
 		}
 
 		/// <summary>
@@ -390,7 +431,14 @@ namespace Genexus.Word
 		/// <param name="size"></param>
 		public void AddRuledLine(int size)
 		{
-			Paragraph paragraph2 = new Paragraph() { RsidParagraphMarkRevision = "005D4D9C", RsidParagraphAddition = "00E416D0", RsidParagraphProperties = "005D4D9C", RsidRunAdditionDefault = "0044322C", ParagraphId = "4190A0B2", TextId = "72E25AC7" };
+			Paragraph paragraph2 = new Paragraph() { 
+				RsidParagraphMarkRevision = "005D4D9C", 
+				RsidParagraphAddition = "00E416D0", 
+				RsidParagraphProperties = "005D4D9C", 
+				RsidRunAdditionDefault = "0044322C", 
+				ParagraphId = "4190A0B2", 
+				TextId = "72E25AC7" 
+			};
 			ParagraphProperties paragraphProperties1 = new ParagraphProperties();
 			ParagraphMarkRunProperties paragraphMarkRunProperties1 = new ParagraphMarkRunProperties();
 			Underline underline1 = new Underline() { Val = UnderlineValues.Single };
@@ -477,7 +525,7 @@ namespace Genexus.Word
 				var vertRezDpi = img.DpiY;
 				var element = GetImageElement(relationshipId, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
 				// Append the reference to body, the element should be in a Run.
-				m_DocumentPart.Document.Body.AppendChild(new Paragraph(new Run(element)));
+				CreateOrReuseParagraph(new Run(element));
 			}
 		}
 
@@ -499,7 +547,10 @@ namespace Genexus.Word
 
 			var element = new Drawing(
 				new DW.Inline(
-					new DW.Extent { Cx = (Int64Value)emuWidth, Cy = (Int64Value)emuHeight },
+					new DW.Extent { 
+						Cx = (Int64Value)emuWidth, 
+						Cy = (Int64Value)emuHeight 
+					},
 					new DW.EffectExtent { LeftEdge = 400L, TopEdge = 0L, RightEdge = 0L, BottomEdge = 0L },
 					new DW.DocProperties { Id = (UInt32Value)1U, Name = pictureName },
 					new DW.NonVisualGraphicFrameDrawingProperties(
@@ -546,13 +597,12 @@ namespace Genexus.Word
 		/// </summary>
 		/// <param name="properties"></param>
 		/// <returns></returns>
-		private IEnumerable<OpenXmlElement> GetProperties(List<string> properties)
+		private static IEnumerable<OpenXmlElement> GetProperties(List<string> properties)
 		{
 			foreach (string prop in properties)
 			{
 				if (StyleProperties.Exists(prop))
 					yield return StyleProperties.RunFunctionProperty(prop);
-
 			}
 		}
 
@@ -666,9 +716,6 @@ namespace Genexus.Word
 			var horzRezDpi = img.DpiX;
 			var vertRezDpi = img.DpiY;
 			
-			
-			
-
 			newProperties.Append(GetImageElement(id, imageFile, "test", width, height, horzRezDpi, vertRezDpi));
 
 			int count = 0;
@@ -689,6 +736,30 @@ namespace Genexus.Word
 				}
 			}
 			return count;
+		}
+
+
+        /// <summary>
+        /// Adds predefined shape <paramref name="shapeId"/> with a custom inner shape text <paramref name="shapeText"/>
+        /// </summary>
+        /// <param name="shapeId"></param>
+        /// <param name="shapeInnetText"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="posLeft">Left Position of the Shape (in cm)</param>
+        /// <param name="posTop">Top Position of the Shape (in cm)</param>
+        /// <returns></returns>
+        public int AddShapeWithText(string shapeId, string shapeText, double width, double height, double posLeft = 0, double posTop = 0, List<string> shapeProperties = null, List<string> textProperties = null)
+		{
+			if (m_Document == null || m_Body == null)
+				return 0;
+
+			Paragraph p = CreateOrReuseParagraph();
+			Run r = new Run(new RunProperties(new NoProof()));
+			
+			r.Append(CustomShapeBuilder.BuildRectangle(m_DocumentPart, m_LastDocumentPropertyId++, shapeText, width, height, posLeft, posTop, shapeProperties, textProperties));
+			p.Append(r);
+			return OutputCode.OK;
 		}
 
 		#endregion

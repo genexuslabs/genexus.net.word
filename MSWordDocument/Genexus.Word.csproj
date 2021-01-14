@@ -49,14 +49,19 @@
   <ItemGroup>
     <Compile Include="BasicStyle.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="EmuHelper.cs" />
     <Compile Include="ErrorCodes.cs" />
     <Compile Include="ExceptionManager.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
     <Compile Include="NumberingPart.cs" />
+    <Compile Include="Shapes\CustomShape.cs" />
+    <Compile Include="Shapes\CustomShapeBuilder.cs" />
+    <Compile Include="Shapes\RectangleShape.cs" />
     <Compile Include="StyleProperties.cs" />
     <Compile Include="WordDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

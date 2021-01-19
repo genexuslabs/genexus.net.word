@@ -24,6 +24,8 @@ namespace Genexus.Word
         public int ReplaceText(Paragraph paragraph, string find, string replaceWith, bool matchCase, List<string> properties)
         {
             Dictionary<Run, List<Run>> addedRuns = new Dictionary<Run, List<Run>>();
+            var spaceBehaviour = new EnumValue<SpaceProcessingModeValues>(SpaceProcessingModeValues.Preserve); // in case your value starts/ends with whitespace
+
             int replaceCount = 0;
             var texts = paragraph.Descendants<Text>();
             for (int t = 0; t < texts.Count(); t++)
@@ -48,7 +50,7 @@ namespace Genexus.Word
                         }
 
                         int replaceIdx = c;
-                        startTxt.Space = new EnumValue<SpaceProcessingModeValues>(SpaceProcessingModeValues.Preserve); // in case your value starts/ends with whitespace
+                        startTxt.Space = spaceBehaviour;
                         startTxt.Text = lines[0].Substring(0, replaceIdx);
                         string remainingText = lines[0].Substring(replaceIdx);
 
@@ -63,13 +65,13 @@ namespace Genexus.Word
                         addedRuns[parentRun] = new List<Run>(); 
                         Run r = new Run();
                         Text newText = new Text(remainingText.Substring(replaceWith.Length));
-                        newText.Space = new EnumValue<SpaceProcessingModeValues>(SpaceProcessingModeValues.Preserve); // in case your value starts/ends with whitespace
+                        newText.Space = spaceBehaviour;
                         r.Append(newText);
                         addedRuns[parentRun].Add(r);
                         
                         r = new Run(new RunProperties(Helper.GetProperties(properties)));
                         newText = new Text(replaceWith);
-                        newText.Space = new EnumValue<SpaceProcessingModeValues>(SpaceProcessingModeValues.Preserve); // in case your value starts/ends with whitespace
+                        newText.Space = spaceBehaviour;
                         r.Append(newText);
                         addedRuns[parentRun].Add(r);
 

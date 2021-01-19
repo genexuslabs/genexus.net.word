@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,6 +10,25 @@ namespace Genexus.Word
 {
     public static class Helper
     {
+
+
+        /// <summary>
+        /// Get properties from string properties
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <returns></returns>
+        public static IEnumerable<OpenXmlElement> GetProperties(List<string> properties)
+        {
+            foreach (string prop in properties)
+            {
+                if (StyleProperties.Exists(prop))
+                {
+                    yield return StyleProperties.RunFunctionProperty(prop);
+                }
+            }
+        }
+
+
         public static string ToString(string value, string defaultValue)
         {
             return (!string.IsNullOrEmpty(value)) ? value : defaultValue;

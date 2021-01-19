@@ -1,7 +1,9 @@
 ﻿using Genexus.Word;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 
 namespace MSWordUnitTesting
@@ -48,6 +50,78 @@ namespace MSWordUnitTesting
                 doc.Save();
             }
 
+        }
+
+
+
+        [TestMethod]
+        public void AppendAndReplace()
+        {
+            using (WordServerDocument doc = new WordServerDocument())
+            {
+                string fileTargetPath = $"{s_BasePath}\\append-replace-test.docx";
+
+                Assert.AreEqual(doc.Create(fileTargetPath, true, out _), OutputCode.OK);
+
+                Assert.AreEqual(doc.AddText("Aggregate", new List<string>()), OutputCode.OK);
+                Assert.AreEqual(doc.AddText("Declaration", new List<string>()), OutputCode.OK);
+                doc.ReplaceText("Aggregate", "AggregateReplacedText", false);
+                doc.ReplaceText("Declaration", "OtherText", false);
+
+                doc.Save();
+
+            }
+        }
+
+        [TestMethod]
+        public void OpenReplaceSimple()
+        {
+            string fileName = "replace-simple-1";
+            string fileTargetPath = Path.Combine(s_BasePath, fileName + ".docx");
+            using (WordServerDocument doc = new WordServerDocument())
+            {
+                File.Copy($"{s_BasePath}\\SimpleDocument.docx", fileTargetPath, true);
+
+                Assert.AreEqual(doc.Open(fileTargetPath, out _), OutputCode.OK);
+
+                doc.AddText("Text to be replaced", new List<string>());
+                doc.AddText("Start Programmatically: " + DateTime.Now, new List<string>());
+
+                doc.ReplaceText("Aggregate", "AggregateReplacedText", false);
+                doc.ReplaceTextWithStyle("clarati", "YYYYY", false, new List<string>() { "fontsize:20", "color:red" });
+
+                doc.ReplaceTextWithStyle("Text to BE REPLACED", "ReplacedTextOK", false, new List<string>() { "fontsize:25", "color:blue" });
+
+                doc.AddText("End Programmatically: " + DateTime.Now, new List<string>());
+
+                doc.Save();
+            }
+            ExtractXlsx(fileTargetPath, Path.Combine(s_BasePath, fileName));
+        }
+
+        [TestMethod]
+        public void ReplaceComplexTextNoStyle()
+        {
+            string fileName = "replaced-complex-test-no-style-2";
+            string fileTargetPath = Path.Combine(s_BasePath, fileName + ".docx");
+
+            using (WordServerDocument doc = new WordServerDocument())
+            {                
+                File.Copy($"{s_BasePath}\\SampleFull.docx", fileTargetPath, true);
+
+                Assert.AreEqual(doc.Open(fileTargetPath, out _), OutputCode.OK);
+
+               // Assert.IsTrue(doc.ReplaceText("Aggregate", "AggregateReplacedText", false) > 0);
+                Assert.IsTrue(doc.ReplaceTextWithStyle("Declaration", "OtherText", true, new List<string>() { "fontsize:54", "color:pink" } ) > 0);
+
+                Assert.IsTrue(doc.ReplaceTextWithStyle("onsumed", "ONSUMED", true, new List<string>() { "fontsize:20", "color:pink" }) > 0);
+
+                doc.AddText("FAX:", new List<string>() { "fontsize:54", "color:pink" });
+
+                doc.Save();
+
+            }
+            ExtractXlsx(fileTargetPath, Path.Combine(s_BasePath, fileName));
         }
 
         [TestMethod]
@@ -203,11 +277,11 @@ namespace MSWordUnitTesting
             doc.AddText("FontSize 54", new List<string>() { "fontsize:54" });
             doc.AddText("color red italic", new List<string>() { "color:red", "italic" });
             doc.AddText("This text without format", new List<string>());
-            doc.AddText("This text without format", new List<string>());            
+            doc.AddText("This text without format", new List<string>());
 
             doc.StartParagraph();
             doc.AddText("Inline text. ", new List<string>());
-            
+
             doc.EndParagraph();
 
             for (var i = 0; i < 4; i++)
@@ -246,5 +320,32 @@ namespace MSWordUnitTesting
             doc.Save();
             doc.Close();
         }
+
+
+
+        private static void EmptyFolder(string folderPath)
+        {
+
+            System.IO.DirectoryInfo di = new DirectoryInfo(folderPath);
+            if (di.Exists)
+            {
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
+            }
+        }
+
+        private static void ExtractXlsx(string fileName, string destFolderName)
+        {
+            EmptyFolder(destFolderName);
+            ZipFile.ExtractToDirectory(fileName, destFolderName);
+        }
+
+
     }
 }

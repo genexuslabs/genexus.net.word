@@ -109,12 +109,12 @@ namespace MSWordUnitTesting
             {                
                 Assert.AreEqual(doc.Create(fileTargetPath, true, out _), OutputCode.OK);
 
-                doc.AddText("Text to be replaced", new List<string>());
-                doc.AddText("Start Programmatically: " + DateTime.Now, new List<string>());
-                
-                doc.ReplaceTextWithStyle("Text to BE REPLACED", "ReplacedTextOK", false, new List<string>() { "fontsize:25", "color:blue" });
+                doc.AddText("Text with no Bold no formatting style", new List<string>());
+                doc.AddText("Text with Bold", new List<string>() { "bold" } );
+                doc.AddText("Text with bold and italic", new List<string>() { "bold", "italic" });
+                doc.AddText("Text with bold and italic and red color", new List<string>() { "bold", "italic", "color:red"});
 
-                doc.AddText("End Programmatically: " + DateTime.Now, new List<string>());
+                Assert.AreEqual(doc.ReplaceTextWithStyle("bold", "BOLD", false, new List<string>() { "color:blue" }), 4);
 
                 doc.Save();
             }

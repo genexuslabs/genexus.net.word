@@ -24,7 +24,6 @@ namespace Genexus.Word
         public int ReplaceText(Paragraph paragraph, string find, string replaceWith, bool matchCase, List<string> properties)
         {
             Dictionary<Run, List<Run>> addedRuns = new Dictionary<Run, List<Run>>();
-            var spaceBehaviour = new EnumValue<SpaceProcessingModeValues>(SpaceProcessingModeValues.Preserve); // in case your value starts/ends with whitespace
 
             int replaceCount = 0;
             var texts = paragraph.Descendants<Text>();
@@ -50,8 +49,9 @@ namespace Genexus.Word
                         }
 
                         int replaceIdx = c;
-                        startTxt.Space = spaceBehaviour;
+
                         startTxt.Text = lines[0].Substring(0, replaceIdx);
+                        startTxt.Space = new EnumValue<SpaceProcessingModeValues>(SpaceProcessingModeValues.Preserve); // in case your value starts/ends with whitespace;
                         string remainingText = lines[0].Substring(replaceIdx);
 
                         replaceCount += 1;
@@ -61,19 +61,12 @@ namespace Genexus.Word
                             texts.ElementAt(i).Text = string.Empty; // clear the text
                         }
 
-                        Run parentRun = (Run)startTxt.Parent;
-                        addedRuns[parentRun] = new List<Run>(); 
-                        Run r = new Run();
-                        Text newText = new Text(remainingText.Substring(replaceWith.Length));
-                        newText.Space = spaceBehaviour;
-                        r.Append(newText);
-                        addedRuns[parentRun].Add(r);
-                        
-                        r = new Run(new RunProperties(Helper.GetProperties(properties)));
-                        newText = new Text(replaceWith);
-                        newText.Space = spaceBehaviour;
-                        r.Append(newText);
-                        addedRuns[parentRun].Add(r);
+                        RunProperties runProps;
+                        Run parentRun;
+                        TryGetRunProperties(startTxt, out runProps, out parentRun);
+
+                        CreateAppendText(remainingText.Substring(replaceWith.Length), runProps, parentRun, addedRuns);
+                        CreateAppendText(replaceWith, new RunProperties(Helper.GetProperties(properties)), parentRun, addedRuns);
 
                         // if 'with' contained line breaks we need to add breaks back...
                         if (lines.Count() > 1)
@@ -99,8 +92,6 @@ namespace Genexus.Word
                         {   // continue to process same line
                             c += skip;
                         }
-
-                      
                     }
                 }
             }
@@ -114,6 +105,41 @@ namespace Genexus.Word
             }
             return replaceCount;
         }
+
+        private static void TryGetRunProperties(Text startTxt, out RunProperties runProps, out Run parentRun)
+        {
+            runProps = null;
+            parentRun = null;
+            try
+            {
+                Run runContainer = (Run)startTxt.Parent;
+                runProps = runContainer.GetFirstChild<RunProperties>();
+                if (runProps != null)
+                {
+                    runProps = (RunProperties)runProps.Clone();
+                }
+                parentRun = (Run)startTxt.Parent;
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private static Run CreateAppendText(string text, RunProperties runProps, Run parentRun, Dictionary<Run, List<Run>> runList)
+        {
+            Run r = new Run(runProps);
+            Text newText = new Text(text);
+            newText.Space = new EnumValue<SpaceProcessingModeValues>(SpaceProcessingModeValues.Preserve); // in case your value starts/ends with whitespace;
+            r.Append(newText);
+            if (!runList.ContainsKey(parentRun))
+            {
+                runList[parentRun] = new List<Run>();
+            }
+            runList[parentRun].Add(r);
+            return r;
+        }
+
 
         /// <summary>
         /// Determine if the texts (starting at element t, char c) exactly contain the find text

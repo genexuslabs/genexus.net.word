@@ -189,6 +189,20 @@ public int ReplaceTextWithStyle(string searchText, string replaceText, bool matc
 /// <param name="height"></param>
 /// <returns></returns>
 public int ReplaceTextWithImage(string searchText, bool matchCase, string imageFile, double width, double height)
+
+ /// <summary>
+        /// Adds predefined shape <paramref name="shapeId"/> with a custom inner shape text <paramref name="shapeText"/>. Only rectangle is supported
+        /// </summary>
+        /// <param name="shapeId"></param>
+        /// <param name="shapeInnetText"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="posLeft">Left Position of the Shape (in cm)</param>
+        /// <param name="posTop">Top Position of the Shape (in cm)</param>
+        /// <param name="shapeProperties">Shape style properties</param>
+        /// <returns></returns>
+        public int AddShapeWithText(string shapeId, string shapeText, double width, double height, double posLeft = 0, double posTop = 0, List<string> shapeProperties = null, List<string> textProperties = null)
+        
 ```
 
 
@@ -328,6 +342,47 @@ public int ReplaceTextWithImage(string searchText, bool matchCase, string imageF
                 doc.AddImage($"{s_BasePath}\\dos.png", 50, 50);
             doc.AddImage($"{s_BasePath}\\tres.jpeg", 20, 20);
 
+            doc.Save();
+            doc.Close();
+        }
+        
+        [TestMethod]
+        public void CreateRectangleShape()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            string filePath = $"{s_BasePath}\\rectangle-shape.docx";
+            File.Delete(filePath);
+            Assert.AreEqual(doc.Create($"{s_BasePath}\\rectangle-shape.docx", true, out _), OutputCode.OK);
+
+            doc.AddShapeWithText("", "SQUARE", 3, 3, 0, 0, new List<string>() {
+                    "strokewidth:5",
+                    "color:#32a852",
+                    "fillcolor:silver"
+                }
+            , new List<string>() {
+                    "fontsize:30",
+                    "color:red"
+                });
+
+           
+            doc.Save();
+            doc.Close();
+        }
+        
+        [TestMethod]
+        public void CreateRectangleShapeWithSibilingText()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            string filePath = $"{s_BasePath}\\rectangle-shape-2.docx";
+            File.Delete(filePath);
+            Assert.AreEqual(doc.Create(filePath, true, out _), OutputCode.OK);
+
+            doc.StartParagraph();
+            
+            doc.AddShapeWithText("", "TXT", 1.5, 1, -1, 0.15);
+            doc.AddText("Item 1", new List<string>());
+            doc.EndParagraph();
+           
             doc.Save();
             doc.Close();
         }

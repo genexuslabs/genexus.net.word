@@ -191,17 +191,17 @@ public int ReplaceTextWithStyle(string searchText, string replaceText, bool matc
 public int ReplaceTextWithImage(string searchText, bool matchCase, string imageFile, double width, double height)
 
  /// <summary>
-        /// Adds predefined shape <paramref name="shapeId"/> with a custom inner shape text <paramref name="shapeText"/>. Only rectangle is supported
-        /// </summary>
-        /// <param name="shapeId"></param>
-        /// <param name="shapeInnetText"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="posLeft">Left Position of the Shape (in cm)</param>
-        /// <param name="posTop">Top Position of the Shape (in cm)</param>
-        /// <param name="shapeProperties">Shape style properties</param>
-        /// <returns></returns>
-        public int AddShapeWithText(string shapeId, string shapeText, double width, double height, double posLeft = 0, double posTop = 0, List<string> shapeProperties = null, List<string> textProperties = null)
+/// Adds predefined shape <paramref name="shapeId"/> with a custom inner shape text <paramref name="shapeText"/>. Only rectangle is supported
+/// </summary>
+/// <param name="shapeId"></param>
+/// <param name="shapeInnetText"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="posLeft">Left Position of the Shape (in cm)</param>
+/// <param name="posTop">Top Position of the Shape (in cm)</param>
+/// <param name="shapeProperties">Shape style properties</param>
+/// <returns></returns>
+public int AddShapeWithText(string shapeId, string shapeText, double width, double height, double posLeft = 0, double posTop = 0, List<string> shapeProperties = null, List<string> textProperties = null)
         
 ```
 

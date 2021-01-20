@@ -44,6 +44,11 @@ namespace Genexus.Word
 
         #endregion
 
+        public WordServerDocument()
+        {
+            strategy = new SearchTextReplaceStrategy();
+        }
+
         /// <summary>
         /// Open the document specified in fileName
         /// </summary>
@@ -83,7 +88,6 @@ namespace Genexus.Word
                 else
                     ExceptionManager.LogException(Messages.NoBodyMessage);
 
-                strategy = new SearchTextReplaceStrategy();
                 return OutputCode.OK;
             }
             catch (Exception ex)

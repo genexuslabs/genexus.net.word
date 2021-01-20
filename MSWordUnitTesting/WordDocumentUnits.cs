@@ -99,6 +99,28 @@ namespace MSWordUnitTesting
             ExtractXlsx(fileTargetPath, Path.Combine(s_BasePath, fileName));
         }
 
+
+        [TestMethod]
+        public void CreateReplaceSimple()
+        {
+            string fileName = "replace-simple-1";
+            string fileTargetPath = Path.Combine(s_BasePath, fileName + ".docx");
+            using (WordServerDocument doc = new WordServerDocument())
+            {                
+                Assert.AreEqual(doc.Create(fileTargetPath, true, out _), OutputCode.OK);
+
+                doc.AddText("Text to be replaced", new List<string>());
+                doc.AddText("Start Programmatically: " + DateTime.Now, new List<string>());
+                
+                doc.ReplaceTextWithStyle("Text to BE REPLACED", "ReplacedTextOK", false, new List<string>() { "fontsize:25", "color:blue" });
+
+                doc.AddText("End Programmatically: " + DateTime.Now, new List<string>());
+
+                doc.Save();
+            }
+            ExtractXlsx(fileTargetPath, Path.Combine(s_BasePath, fileName));
+
+        }
         [TestMethod]
         public void ReplaceComplexTextNoStyle()
         {

@@ -103,7 +103,7 @@ namespace MSWordUnitTesting
         [TestMethod]
         public void CreateReplaceSimple()
         {
-            string fileName = "replace-simple-1";
+            string fileName = "create-replace-simple-1";
             string fileTargetPath = Path.Combine(s_BasePath, fileName + ".docx");
             using (WordServerDocument doc = new WordServerDocument())
             {                

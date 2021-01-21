@@ -535,7 +535,7 @@ namespace Genexus.Word
 
                 var horzRezDpi = img.DpiX;
                 var vertRezDpi = img.DpiY;
-                var element = GetImageElement(relationshipId, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
+                var element = GetImageElement(relationshipId, m_LastDocumentPropertyId++, fileName, Path.GetFileNameWithoutExtension(fileName), width, height, horzRezDpi, vertRezDpi);
                 // Append the reference to body, the element should be in a Run.
                 CreateOrReuseParagraph(new Run(element));
             }
@@ -552,7 +552,7 @@ namespace Genexus.Word
         /// <param name="horzRezDpi"></param>
         /// <param name="vertRezDpi"></param>
         /// <returns></returns>
-        private static Drawing GetImageElement(string imagePartId, string fileName, string pictureName, double width, double height, double horzRezDpi, double vertRezDpi)
+        private static Drawing GetImageElement(string imagePartId, uint elementNumber, string fileName, string pictureName, double width, double height, double horzRezDpi, double vertRezDpi)
         {
             double emuWidth = width * Constants.EnglishMetricUnitsPerInch / horzRezDpi;
             double emuHeight = height * Constants.EnglishMetricUnitsPerInch / vertRezDpi;
@@ -565,7 +565,7 @@ namespace Genexus.Word
                         Cy = (Int64Value)emuHeight
                     },
                     new DW.EffectExtent { LeftEdge = 400L, TopEdge = 0L, RightEdge = 0L, BottomEdge = 0L },
-                    new DW.DocProperties { Id = (UInt32Value)1U, Name = pictureName },
+                    new DW.DocProperties { Id = elementNumber, Name = pictureName },
                     new DW.NonVisualGraphicFrameDrawingProperties(
                     new A.GraphicFrameLocks { NoChangeAspect = true }),
                     new A.Graphic(
@@ -700,7 +700,7 @@ namespace Genexus.Word
             var horzRezDpi = img.DpiX;
             var vertRezDpi = img.DpiY;
 
-            newProperties.Append(GetImageElement(id, imageFile, "test", width, height, horzRezDpi, vertRezDpi));
+            newProperties.Append(GetImageElement(id, m_LastDocumentPropertyId++, imageFile, "test", width, height, horzRezDpi, vertRezDpi));
 
             int count = 0;
             var paras = m_Body.Elements<Paragraph>();

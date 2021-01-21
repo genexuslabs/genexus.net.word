@@ -344,6 +344,36 @@ namespace MSWordUnitTesting
         }
 
 
+        [TestMethod]
+        public void CreationParagraphsWithRectangleShapeAndImage()
+        {
+            string fileName = "shape-image";
+            string fileTargetPath = Path.Combine(s_BasePath, fileName + ".docx");
+            using (WordServerDocument doc = new WordServerDocument())
+            {
+                File.Delete(fileTargetPath);
+                Assert.AreEqual(doc.Create(fileTargetPath, true, out _), OutputCode.OK);
+
+                doc.AddImage($"{s_BasePath}\\tres.jpeg", 20, 20);
+
+                doc.AddText("Inline text. ", new List<string>());
+
+                doc.AddShapeWithText("", "SQUARE2", 3, 3, 0, 0, new List<string>() {
+                    "strokewidth:4",
+                    "color:blue"
+                }
+               , new List<string>() {
+                    "fontsize:30",
+                    "color:#32a852"
+                   });
+
+                
+                doc.Save();
+            }
+            
+            ExtractXlsx(fileTargetPath, Path.Combine(s_BasePath, fileName));
+        }
+
 
         private static void EmptyFolder(string folderPath)
         {

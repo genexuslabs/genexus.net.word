@@ -386,6 +386,53 @@ public int AddShapeWithText(string shapeId, string shapeText, double width, doub
             doc.Save();
             doc.Close();
         }
+
+        [TestMethod]
+        public void CreateShapeWithTextAlignment()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            string filePath = $"{s_BasePath}\\rectangle-shape-text-alignment.docx";
+
+            File.Delete(filePath);
+            Assert.AreEqual(doc.Create(filePath, true, out _), OutputCode.OK);
+
+            doc.AddShapeWithText("", "TOP-RIGHT", 6, 6, 0, 0, new List<string>() {
+                    "strokewidth:4",
+                    "color:blue",
+                    "verticalalignment:" + VerticalAlignment.Top,
+                    "horizontalalignment:" + HorizontalAlignment.Right
+                }
+           , new List<string>() {
+                    "fontsize:35",
+                    "color:#32a852"
+               });
+
+            doc.AddShapeWithText("", "BOTTOM-CENTER", 10, 5, 0, 6, new List<string>() {
+                    "strokewidth:4",
+                    "color:blue",
+                    "verticalalignment:" + VerticalAlignment.Bottom,
+                    "horizontalalignment:" + HorizontalAlignment.Center
+                }
+           , new List<string>() {
+                    "fontsize:35",
+                    "color:#32a852"
+               });
+
+            doc.AddShapeWithText("", "Middle-Left", 10, 5, 0, 12, new List<string>() {
+                    "strokewidth:4",
+                    "color:blue",
+                    "verticalalignment:" + VerticalAlignment.Middle,
+                    "horizontalalignment:" + HorizontalAlignment.Left
+                }
+           , new List<string>() {
+                    "fontsize:35",
+                    "color:#32a852"
+               });
+
+
+            doc.Save();
+            doc.Close();
+        }
     }
 ```
 

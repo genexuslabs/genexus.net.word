@@ -1,4 +1,5 @@
 ﻿using Genexus.Word;
+using Genexus.Word.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -106,13 +107,13 @@ namespace MSWordUnitTesting
             string fileName = "create-replace-simple-1";
             string fileTargetPath = Path.Combine(s_BasePath, fileName + ".docx");
             using (WordServerDocument doc = new WordServerDocument())
-            {                
+            {
                 Assert.AreEqual(doc.Create(fileTargetPath, true, out _), OutputCode.OK);
 
                 doc.AddText("Text with no Bold no formatting style", new List<string>());
-                doc.AddText("Text with Bold", new List<string>() { "bold" } );
+                doc.AddText("Text with Bold", new List<string>() { "bold" });
                 doc.AddText("Text with bold and italic", new List<string>() { "bold", "italic" });
-                doc.AddText("Text with bold and italic and red color", new List<string>() { "bold", "italic", "color:red"});
+                doc.AddText("Text with bold and italic and red color", new List<string>() { "bold", "italic", "color:red" });
 
                 Assert.AreEqual(doc.ReplaceTextWithStyle("bold", "BOLD", false, new List<string>() { "color:blue" }), 4);
 
@@ -128,13 +129,13 @@ namespace MSWordUnitTesting
             string fileTargetPath = Path.Combine(s_BasePath, fileName + ".docx");
 
             using (WordServerDocument doc = new WordServerDocument())
-            {                
+            {
                 File.Copy($"{s_BasePath}\\SampleFull.docx", fileTargetPath, true);
 
                 Assert.AreEqual(doc.Open(fileTargetPath, out _), OutputCode.OK);
 
-               // Assert.IsTrue(doc.ReplaceText("Aggregate", "AggregateReplacedText", false) > 0);
-                Assert.IsTrue(doc.ReplaceTextWithStyle("Declaration", "OtherText", true, new List<string>() { "fontsize:54", "color:pink" } ) > 0);
+                // Assert.IsTrue(doc.ReplaceText("Aggregate", "AggregateReplacedText", false) > 0);
+                Assert.IsTrue(doc.ReplaceTextWithStyle("Declaration", "OtherText", true, new List<string>() { "fontsize:54", "color:pink" }) > 0);
 
                 Assert.IsTrue(doc.ReplaceTextWithStyle("onsumed", "ONSUMED", true, new List<string>() { "fontsize:20", "color:pink" }) > 0);
 
@@ -345,6 +346,56 @@ namespace MSWordUnitTesting
 
 
         [TestMethod]
+        public void CreateShapeWithTextAlignment()
+        {
+            WordServerDocument doc = new WordServerDocument();
+            string filePath = $"{s_BasePath}\\rectangle-shape-text-alignment.docx";
+
+            File.Delete(filePath);
+            Assert.AreEqual(doc.Create(filePath, true, out _), OutputCode.OK);
+
+
+            doc.AddText("Bold", new List<string>() { "bold" });
+
+            doc.AddShapeWithText("", "TOP-RIGHT", 6, 6, 0, 0, new List<string>() {
+                    "strokewidth:4",
+                    "color:blue",
+                    "verticalalignment:" + VerticalAlignment.Top,
+                    "horizontalalignment:" + HorizontalAlignment.Right
+                }
+           , new List<string>() {
+                    "fontsize:35",
+                    "color:#32a852"
+               });
+
+            doc.AddShapeWithText("", "BOTTOM-CENTER", 10, 5, 0, 6, new List<string>() {
+                    "strokewidth:4",
+                    "color:blue",
+                    "verticalalignment:" + VerticalAlignment.Bottom,
+                    "horizontalalignment:" + HorizontalAlignment.Center
+                }
+           , new List<string>() {
+                    "fontsize:35",
+                    "color:#32a852"
+               });
+
+            doc.AddShapeWithText("", "Middle-Left", 10, 5, 0, 12, new List<string>() {
+                    "strokewidth:4",
+                    "color:blue",
+                    "verticalalignment:" + VerticalAlignment.Middle,
+                    "horizontalalignment:" + HorizontalAlignment.Left
+                }
+           , new List<string>() {
+                    "fontsize:35",
+                    "color:#32a852"
+               });
+
+
+            doc.Save();
+            doc.Close();
+        }
+
+        [TestMethod]
         public void CreationParagraphsWithRectangleShapeAndImage()
         {
             string fileName = "shape-image";
@@ -367,10 +418,10 @@ namespace MSWordUnitTesting
                     "color:#32a852"
                    });
 
-                
+
                 doc.Save();
             }
-            
+
             ExtractXlsx(fileTargetPath, Path.Combine(s_BasePath, fileName));
         }
 

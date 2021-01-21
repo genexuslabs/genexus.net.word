@@ -188,8 +188,8 @@ namespace Genexus.Word.Shapes
 
             ParagraphProperties paragraphProps = new ParagraphProperties(new Justification()
             {
-                Val = JustificationValues.Center
-            });
+                Val = (JustificationValues)Enum.Parse(typeof(JustificationValues), ((int)ShapeProperties.HorizontalAlignment).ToString())
+            }) ;
 
             Run textRun = WordServerDocument.GetTextRun(ShapeProperties.InnerText, TextProperties);
 
@@ -212,7 +212,7 @@ namespace Genexus.Word.Shapes
                 TopInset = 8890,
                 RightInset = 74295,
                 BottomInset = 8890,
-                Anchor = A.TextAnchoringTypeValues.Center,
+                Anchor = (A.TextAnchoringTypeValues)Enum.Parse(typeof(A.TextAnchoringTypeValues), ((int)ShapeProperties.VerticalAlignment).ToString()),
                 AnchorCenter = true,
                 UpRight = false
             });
